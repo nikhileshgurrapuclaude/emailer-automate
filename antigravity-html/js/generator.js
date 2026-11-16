@@ -49,14 +49,15 @@ const TemplateGenerator = {
   // Resolve base image URL
   // Strictly isolates assets to: [Domain]/[Brand]/[FolderName]/img/[Filename]
   getImageUrl(brand, folderName, filename, customDomain = '') {
+    const defaultOrigin = 'https://emailer-automate-antigravity-html.vercel.app';
     const origin = (customDomain && customDomain.trim()) 
       ? customDomain.trim().replace(/\/+$/, '') 
       : (typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:') 
           ? window.location.origin 
-          : 'https://your-app.vercel.app');
+          : defaultOrigin);
 
     const cleanBrand = (brand || 'avendus').toLowerCase();
-    const cleanFolder = (folderName || 'deal_emailer').trim();
+    const cleanFolder = (folderName || 'deal_KSH_Group').trim();
     const cleanFile = filename.replace(/^\/+/, '');
 
     return `${origin}/${cleanBrand}/${cleanFolder}/img/${cleanFile}`;
@@ -85,12 +86,11 @@ const TemplateGenerator = {
     const cleanFolder = (folderName || 'deal_KSH_Group').trim();
 
     // Mode resolution for image paths:
-    // 1. isZipExport: 'img/[filename]' (relative to index.html inside the deal folder)
-    // 2. isLivePreview: '${cleanBrand}/${cleanFolder}/img/[filename]' (relative to app root for iframe preview)
-    // 3. absoluteWebUrl: 'https://domain/[brand]/[folder]/img/[filename]' (full public URLs for copying into Gmail/Outlook)
-    const isZipExport = options.relativeForZip === true;
+    // 1. isLivePreview: '${cleanBrand}/${serverFolder}/img/[filename]' (relative to app root for iframe preview)
+    // 2. Default & ZIP Export: Full live public HTTPS URLs: 'https://emailer-automate-antigravity-html.vercel.app/[brand]/[folder]/img/[filename]'
+    //    Guarantees that opening index.html and copying to Gmail/Outlook never fails with attachment or broken image errors!
     const isLivePreview = options.isLivePreview === true;
-    const isAbsoluteWeb = options.absoluteWebUrl === true;
+    const useOfflineRelative = options.useOfflineRelativePaths === true;
 
     // List of known seed deals pre-deployed with physical files on server
     const KNOWN_SERVER_DEALS = [
@@ -102,34 +102,28 @@ const TemplateGenerator = {
     ];
 
     const resolveImg = (filename) => {
-      if (isZipExport) {
+      if (useOfflineRelative) {
         return `img/${filename}`;
       }
       const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
       if (isLivePreview) {
         return `${cleanBrand}/${serverFolder}/img/${filename}`;
       }
+      // Public HTTPS URL for live emails and downloaded ZIP index.html
       return this.getImageUrl(brand, serverFolder, filename, customDomain);
     };
 
     // Banner image resolution:
-    // If exporting for ZIP, index.html must ALWAYS point to relative 'img/[filename]'
-    // If copying for email (absolute web URLs), use full HTTPS URLs or base64
-    // If in live preview, use blob/data/http directly
     let bannerSrc;
-    if (isZipExport) {
+    if (useOfflineRelative) {
       bannerSrc = `img/${bannerFilename}`;
-    } else if (isAbsoluteWeb) {
-      if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:'))) {
-        bannerSrc = bannerUrl;
-      } else {
-        const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-        bannerSrc = this.getImageUrl(brand, serverFolder, bannerFilename, customDomain);
-      }
-    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:') || bannerUrl.startsWith('blob:'))) {
+    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:'))) {
+      bannerSrc = bannerUrl;
+    } else if (bannerUrl && bannerUrl.startsWith('blob:') && isLivePreview) {
       bannerSrc = bannerUrl;
     } else {
-      bannerSrc = resolveImg(bannerFilename);
+      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
+      bannerSrc = this.getImageUrl(brand, serverFolder, bannerFilename, customDomain);
     }
 
     // All footer assets reside inside this deal's own img/ folder

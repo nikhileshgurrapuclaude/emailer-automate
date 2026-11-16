@@ -684,8 +684,8 @@ Best regards,
     try {
       const zip = new SimpleZip();
 
-      // 1. Single index.html at root of ZIP (image src = "img/[filename]")
-      const zipHtml = TemplateGenerator.generate(data, { relativeForZip: true });
+      // 1. Single index.html at root of ZIP (uses live public HTTPS URLs so copy-pasting to Gmail / Outlook never breaks)
+      const zipHtml = TemplateGenerator.generate(data);
       await zip.file('index.html', zipHtml);
 
       // 2. Add all 11 Footer Assets directly into img/ folder (NO DUPLICATE FOLDERS)
