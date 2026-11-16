@@ -294,8 +294,11 @@ class EmailerStudioApp {
       this.bannerFileInput.addEventListener('change', (e) => {
         const file = e.target.files && e.target.files[0];
         if (file) {
+          const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '_') || 'banner.jpg';
           this.uploadedBannerBlob = file;
-          this.uploadedBannerFilename = file.name || 'banner.jpg';
+          this.uploadedBannerFilename = safeFilename;
+
+          // Object URL for instant UI preview
           const objectUrl = URL.createObjectURL(file);
           if (this.bannerPreviewImg) {
             this.bannerPreviewImg.src = objectUrl;
@@ -304,6 +307,24 @@ class EmailerStudioApp {
           if (this.bannerUrlInput) {
             this.bannerUrlInput.value = objectUrl;
           }
+
+          // Convert to Base64 so banner is persisted in localStorage across page reloads
+          const reader = new FileReader();
+          reader.onload = (readEv) => {
+            const base64Str = readEv.target.result;
+            this.uploadedBannerBase64 = base64Str;
+            if (this.activeDealId) {
+              const deal = this.deals.find(d => d.id === this.activeDealId);
+              if (deal) {
+                deal.bannerBase64 = base64Str;
+                deal.bannerFilename = safeFilename;
+                deal.bannerUrl = base64Str;
+                this.saveDeals();
+              }
+            }
+          };
+          reader.readAsDataURL(file);
+
           this.updateLivePreview();
           this.showToast(`Banner image loaded: ${file.name}`);
         }
@@ -420,6 +441,12 @@ Best regards,
       lastModified: new Date().toISOString()
     };
 
+    // Reset upload state for fresh mailer
+    this.uploadedBannerBlob = null;
+    this.uploadedBannerBase64 = null;
+    this.uploadedBannerFilename = 'bannerNew.jpg';
+    if (this.bannerFileInput) this.bannerFileInput.value = '';
+
     this.deals.unshift(newDeal);
     this.saveDeals();
     this.loadDeal(newDeal.id);
@@ -434,15 +461,27 @@ Best regards,
     this.activeDealId = deal.id;
     this.currentBrand = deal.brand || 'avendus';
 
+    // Restore banner upload state if persisted
+    if (deal.bannerBase64) {
+      this.uploadedBannerBase64 = deal.bannerBase64;
+      this.uploadedBannerFilename = deal.bannerFilename || 'banner.jpg';
+      this.uploadedBannerBlob = this.base64ToBlob(deal.bannerBase64);
+    } else {
+      this.uploadedBannerBase64 = null;
+      this.uploadedBannerFilename = deal.bannerFilename || 'bannerNew.jpg';
+      this.uploadedBannerBlob = null;
+    }
+    if (this.bannerFileInput) this.bannerFileInput.value = '';
+
     this.folderNameInput.value = deal.folderName || '';
     this.emailTitleInput.value = deal.title || '';
     this.previewTextInput.value = deal.previewText || '';
-    this.bannerUrlInput.value = deal.bannerUrl || '';
+    this.bannerUrlInput.value = deal.bannerBase64 || deal.bannerUrl || '';
     this.buttonLabelInput.value = deal.buttonLabel || 'Know More';
     this.buttonLinkInput.value = deal.buttonLink || 'https://www.avendus.com';
 
     if (this.bannerPreviewImg) {
-      this.bannerPreviewImg.src = deal.bannerUrl || `avendus/${deal.folderName}/img/bannerNew.jpg`;
+      this.bannerPreviewImg.src = deal.bannerBase64 || deal.bannerUrl || `avendus/deal_KSH_Group/img/bannerNew.jpg`;
       this.bannerPreviewImg.style.display = 'block';
     }
 
@@ -455,15 +494,40 @@ Best regards,
     this.renderSidebar();
   }
 
+  base64ToBlob(base64Data) {
+    if (!base64Data || typeof base64Data !== 'string' || !base64Data.includes(';base64,')) {
+      return null;
+    }
+    try {
+      const parts = base64Data.split(';base64,');
+      const contentType = parts[0].split(':')[1] || 'image/jpeg';
+      const raw = window.atob(parts[1]);
+      const rawLength = raw.length;
+      const uInt8Array = new Uint8Array(rawLength);
+      for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+      }
+      return new Blob([uInt8Array], { type: contentType });
+    } catch (e) {
+      console.error('Error converting base64 to blob:', e);
+      return null;
+    }
+  }
+
   getFormData() {
+    const deal = this.deals.find(d => d.id === this.activeDealId);
+    const existingBase64 = this.uploadedBannerBase64 || (deal && deal.bannerBase64) || null;
+    const existingFilename = this.uploadedBannerFilename || (deal && deal.bannerFilename) || 'bannerNew.jpg';
+
     return {
       id: this.activeDealId || 'deal_' + Date.now(),
       brand: this.currentBrand,
       folderName: (this.folderNameInput.value || 'deal_KSH_Group').trim(),
       title: (this.emailTitleInput.value || 'Transaction Announcement').trim(),
       previewText: (this.previewTextInput.value || '').trim(),
-      bannerUrl: this.bannerUrlInput.value || `avendus/${(this.folderNameInput.value || 'deal_KSH_Group').trim()}/img/bannerNew.jpg`,
-      bannerFilename: this.uploadedBannerFilename || 'bannerNew.jpg',
+      bannerUrl: this.bannerUrlInput.value || existingBase64 || `avendus/deal_KSH_Group/img/bannerNew.jpg`,
+      bannerFilename: existingFilename,
+      bannerBase64: existingBase64,
       content: this.editor ? this.editor.getValue() : (this.contentInput.value || ''),
       buttonLabel: (this.buttonLabelInput.value || 'Know More').trim(),
       buttonLink: (this.buttonLinkInput.value || 'https://www.avendus.com').trim(),
@@ -573,8 +637,10 @@ Best regards,
       // 1. Generate HTML file for the ZIP package (all image src = "img/[filename]")
       const zipHtml = TemplateGenerator.generate(data, { relativeForZip: true });
       await zip.file(`${folderPrefix}index.html`, zipHtml);
+      await zip.file(`${data.folderName}/index.html`, zipHtml);
+      await zip.file(`index.html`, zipHtml);
 
-      // 2. Add all Footer Assets into this deal's OWN img/ folder
+      // 2. Add all 11 Footer Assets into this deal's OWN img/ folder
       const footerAssets = [
         'IBSignature.png',
         'abou_us.png',
@@ -607,28 +673,47 @@ Best regards,
 
         if (loadedBlob) {
           await zip.file(`${folderPrefix}img/${filename}`, loadedBlob);
+          await zip.file(`${data.folderName}/img/${filename}`, loadedBlob);
+          await zip.file(`img/${filename}`, loadedBlob);
         }
       }
 
       // 3. Add Banner Image to this deal's OWN img/ folder
+      let bannerBlob = null;
       if (this.uploadedBannerBlob) {
-        await zip.file(`${folderPrefix}img/${data.bannerFilename}`, this.uploadedBannerBlob);
+        bannerBlob = this.uploadedBannerBlob;
+      } else if (this.uploadedBannerBase64) {
+        bannerBlob = this.base64ToBlob(this.uploadedBannerBase64);
+      } else if (data.bannerBase64) {
+        bannerBlob = this.base64ToBlob(data.bannerBase64);
       } else {
+        const deal = this.deals.find(d => d.id === this.activeDealId);
+        if (deal && deal.bannerBase64) {
+          bannerBlob = this.base64ToBlob(deal.bannerBase64);
+        }
+      }
+
+      // If no custom uploaded banner, fetch the default deal banner or master banner
+      if (!bannerBlob) {
         try {
           const bResp = await fetch(`${data.brand}/${data.folderName}/img/${data.bannerFilename}`);
           if (bResp.ok) {
-            const bBlob = await bResp.blob();
-            await zip.file(`${folderPrefix}img/${data.bannerFilename}`, bBlob);
+            bannerBlob = await bResp.blob();
           } else {
             const bResp2 = await fetch(`${data.brand}/deal_KSH_Group/img/bannerNew.jpg`);
             if (bResp2.ok) {
-              const bBlob2 = await bResp2.blob();
-              await zip.file(`${folderPrefix}img/${data.bannerFilename}`, bBlob2);
+              bannerBlob = await bResp2.blob();
             }
           }
         } catch (err) {
           console.warn('Could not bundle banner:', err);
         }
+      }
+
+      if (bannerBlob) {
+        await zip.file(`${folderPrefix}img/${data.bannerFilename}`, bannerBlob);
+        await zip.file(`${data.folderName}/img/${data.bannerFilename}`, bannerBlob);
+        await zip.file(`img/${data.bannerFilename}`, bannerBlob);
       }
 
       // 4. Compile ZIP Blob & trigger download

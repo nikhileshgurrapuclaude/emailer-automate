@@ -91,21 +91,37 @@ const TemplateGenerator = {
     const isZipExport = options.relativeForZip === true;
     const isLivePreview = options.isLivePreview === true;
 
+    // List of known seed deals pre-deployed with physical files on server
+    const KNOWN_SERVER_DEALS = [
+      'deal_KSH_Group',
+      'demo_emailer',
+      'ecm_newsletter_march_2026',
+      'ets_newsletter_march_2026',
+      'new_age_report'
+    ];
+
     const resolveImg = (filename) => {
       if (isZipExport) {
         return `img/${filename}`;
       }
       if (isLivePreview) {
-        return `${cleanBrand}/${cleanFolder}/img/${filename}`;
+        // If it's a seed deal deployed on server, use it.
+        // Otherwise (for any newly created deal), fallback to master asset library 'deal_KSH_Group'
+        // so live preview never shows broken images!
+        const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
+        return `${cleanBrand}/${serverFolder}/img/${filename}`;
       }
       return this.getImageUrl(brand, folderName, filename, customDomain);
     };
 
     // Banner image resolution:
-    // If user provided a remote URL (http/https) or inline data URL, use it directly;
-    // Otherwise, point to the deal's own img/ folder.
+    // If exporting for ZIP, index.html must ALWAYS point to relative 'img/[filename]'
+    // If in live preview or web mode with direct URL (http, https, data, blob), use it directly
+    // Otherwise, fallback to resolveImg(bannerFilename)
     let bannerSrc;
-    if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:'))) {
+    if (isZipExport) {
+      bannerSrc = `img/${bannerFilename}`;
+    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:') || bannerUrl.startsWith('blob:'))) {
       bannerSrc = bannerUrl;
     } else {
       bannerSrc = resolveImg(bannerFilename);
