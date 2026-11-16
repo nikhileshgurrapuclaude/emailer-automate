@@ -87,9 +87,10 @@ const TemplateGenerator = {
     // Mode resolution for image paths:
     // 1. isZipExport: 'img/[filename]' (relative to index.html inside the deal folder)
     // 2. isLivePreview: '${cleanBrand}/${cleanFolder}/img/[filename]' (relative to app root for iframe preview)
-    // 3. Deployed / default: 'https://your-app.vercel.app/[brand]/[folderName]/img/[filename]'
+    // 3. absoluteWebUrl: 'https://domain/[brand]/[folder]/img/[filename]' (full public URLs for copying into Gmail/Outlook)
     const isZipExport = options.relativeForZip === true;
     const isLivePreview = options.isLivePreview === true;
+    const isAbsoluteWeb = options.absoluteWebUrl === true;
 
     // List of known seed deals pre-deployed with physical files on server
     const KNOWN_SERVER_DEALS = [
@@ -104,23 +105,27 @@ const TemplateGenerator = {
       if (isZipExport) {
         return `img/${filename}`;
       }
+      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
       if (isLivePreview) {
-        // If it's a seed deal deployed on server, use it.
-        // Otherwise (for any newly created deal), fallback to master asset library 'deal_KSH_Group'
-        // so live preview never shows broken images!
-        const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
         return `${cleanBrand}/${serverFolder}/img/${filename}`;
       }
-      return this.getImageUrl(brand, folderName, filename, customDomain);
+      return this.getImageUrl(brand, serverFolder, filename, customDomain);
     };
 
     // Banner image resolution:
     // If exporting for ZIP, index.html must ALWAYS point to relative 'img/[filename]'
-    // If in live preview or web mode with direct URL (http, https, data, blob), use it directly
-    // Otherwise, fallback to resolveImg(bannerFilename)
+    // If copying for email (absolute web URLs), use full HTTPS URLs or base64
+    // If in live preview, use blob/data/http directly
     let bannerSrc;
     if (isZipExport) {
       bannerSrc = `img/${bannerFilename}`;
+    } else if (isAbsoluteWeb) {
+      if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:'))) {
+        bannerSrc = bannerUrl;
+      } else {
+        const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
+        bannerSrc = this.getImageUrl(brand, serverFolder, bannerFilename, customDomain);
+      }
     } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:') || bannerUrl.startsWith('blob:'))) {
       bannerSrc = bannerUrl;
     } else {

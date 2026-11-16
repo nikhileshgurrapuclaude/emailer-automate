@@ -222,6 +222,7 @@ class EmailerStudioApp {
 
     this.generateBtn = document.getElementById('generateBtn');
     this.updateTabBtn = document.getElementById('updateTabBtn');
+    this.copyEmailBtn = document.getElementById('copyEmailBtn');
     this.downloadZipBtn = document.getElementById('downloadZipBtn');
 
     this.previewIframe = document.getElementById('previewIframe');
@@ -349,6 +350,12 @@ class EmailerStudioApp {
     if (this.updateTabBtn) {
       this.updateTabBtn.addEventListener('click', () => {
         this.handleUpdateTab();
+      });
+    }
+
+    if (this.copyEmailBtn) {
+      this.copyEmailBtn.addEventListener('click', () => {
+        this.handleCopyForEmail();
       });
     }
 
@@ -579,8 +586,8 @@ Best regards,
     this.saveDeals();
     this.renderSidebar();
 
-    // Generate with deal-isolated paths for local new-tab preview
-    const finalHtml = TemplateGenerator.generate(data, { isLivePreview: true });
+    // Generate with absolute public HTTPS URLs so opened tab images and copy-pasted content in Gmail load live from web
+    const finalHtml = TemplateGenerator.generate(data, { absoluteWebUrl: true });
 
     const blob = new Blob([finalHtml], { type: 'text/html;charset=utf-8' });
     const tabUrl = URL.createObjectURL(blob);
@@ -598,7 +605,7 @@ Best regards,
 
   handleUpdateTab() {
     const data = this.getFormData();
-    const finalHtml = TemplateGenerator.generate(data, { isLivePreview: true });
+    const finalHtml = TemplateGenerator.generate(data, { absoluteWebUrl: true });
 
     if (this.openedTabRef && !this.openedTabRef.closed) {
       try {
@@ -620,7 +627,51 @@ Best regards,
     this.handleGenerateEmailer();
   }
 
-  // Download ZIP with all images packaged inside this deal's OWN img/ folder
+  // Copy rich HTML emailer directly to clipboard for Gmail / Outlook
+  async handleCopyForEmail() {
+    const data = this.getFormData();
+    // Generate emailer with absolute HTTPS web URLs so Gmail can load all images
+    const emailHtml = TemplateGenerator.generate(data, { absoluteWebUrl: true });
+
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        const textBlob = new Blob([emailHtml], { type: 'text/plain' });
+        const htmlBlob = new Blob([emailHtml], { type: 'text/html' });
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': htmlBlob,
+            'text/plain': textBlob
+          })
+        ]);
+        this.showToast('Emailer copied to clipboard! Ready to paste (Ctrl+V) directly into Gmail or Outlook.');
+      } else {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = emailHtml;
+        tempDiv.style.position = 'fixed';
+        tempDiv.style.left = '-9999px';
+        document.body.appendChild(tempDiv);
+        const range = document.createRange();
+        range.selectNodeContents(tempDiv);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        document.body.removeChild(tempDiv);
+        this.showToast('Emailer copied! Ready to paste into Gmail.');
+      }
+    } catch (err) {
+      console.warn('ClipboardItem copy error, falling back:', err);
+      const el = document.createElement('textarea');
+      el.value = emailHtml;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.showToast('Email HTML code copied to clipboard!');
+    }
+  }
+
+  // Download clean single-level ZIP with index.html and img/ folder
   async handleDownloadZip() {
     if (!this.isGenerated) {
       this.showToast('Please click "Generate Emailer" first before downloading ZIP.', 'warning');
@@ -632,15 +683,12 @@ Best regards,
 
     try {
       const zip = new SimpleZip();
-      const folderPrefix = `${data.brand}/${data.folderName}/`;
 
-      // 1. Generate HTML file for the ZIP package (all image src = "img/[filename]")
+      // 1. Single index.html at root of ZIP (image src = "img/[filename]")
       const zipHtml = TemplateGenerator.generate(data, { relativeForZip: true });
-      await zip.file(`${folderPrefix}index.html`, zipHtml);
-      await zip.file(`${data.folderName}/index.html`, zipHtml);
-      await zip.file(`index.html`, zipHtml);
+      await zip.file('index.html', zipHtml);
 
-      // 2. Add all 11 Footer Assets into this deal's OWN img/ folder
+      // 2. Add all 11 Footer Assets directly into img/ folder (NO DUPLICATE FOLDERS)
       const footerAssets = [
         'IBSignature.png',
         'abou_us.png',
@@ -657,7 +705,7 @@ Best regards,
 
       for (const filename of footerAssets) {
         let loadedBlob = null;
-        // Attempt 1: Fetch from this deal's own img directory
+        // Attempt 1: Fetch from this deal's own img directory on server
         try {
           const resp = await fetch(`${data.brand}/${data.folderName}/img/${filename}`);
           if (resp.ok) loadedBlob = await resp.blob();
@@ -672,13 +720,11 @@ Best regards,
         }
 
         if (loadedBlob) {
-          await zip.file(`${folderPrefix}img/${filename}`, loadedBlob);
-          await zip.file(`${data.folderName}/img/${filename}`, loadedBlob);
           await zip.file(`img/${filename}`, loadedBlob);
         }
       }
 
-      // 3. Add Banner Image to this deal's OWN img/ folder
+      // 3. Add Banner Image directly into img/ folder
       let bannerBlob = null;
       if (this.uploadedBannerBlob) {
         bannerBlob = this.uploadedBannerBlob;
@@ -693,7 +739,7 @@ Best regards,
         }
       }
 
-      // If no custom uploaded banner, fetch the default deal banner or master banner
+      // If no custom uploaded banner, fetch default banner from server
       if (!bannerBlob) {
         try {
           const bResp = await fetch(`${data.brand}/${data.folderName}/img/${data.bannerFilename}`);
@@ -711,8 +757,6 @@ Best regards,
       }
 
       if (bannerBlob) {
-        await zip.file(`${folderPrefix}img/${data.bannerFilename}`, bannerBlob);
-        await zip.file(`${data.folderName}/img/${data.bannerFilename}`, bannerBlob);
         await zip.file(`img/${data.bannerFilename}`, bannerBlob);
       }
 
@@ -728,6 +772,9 @@ Best regards,
       this.showToast(`Downloaded: ${data.folderName}.zip!`);
     } catch (e) {
       console.error('ZIP generation error:', e);
+      this.showToast('Error generating ZIP: ' + e.message, 'error');
+    }
+  }
       this.showToast('Error generating ZIP: ' + e.message, 'error');
     }
   }
