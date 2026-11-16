@@ -775,9 +775,6 @@ Best regards,
       this.showToast('Error generating ZIP: ' + e.message, 'error');
     }
   }
-      this.showToast('Error generating ZIP: ' + e.message, 'error');
-    }
-  }
 
   formatDate(dateString) {
     if (!dateString) return 'Just now';
