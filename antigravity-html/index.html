@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emailer Automation Studio - Avendus, Sanctum & Custom</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="h-full flex flex-col bg-[#0f1117] text-gray-100 overflow-hidden">
+
+  <!-- ========================================================================
+       TOP NAVIGATION BAR
+       ======================================================================== -->
+  <header class="h-14 border-b border-[#232838] bg-[#161922] px-4 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-3">
+      <!-- Sidebar Toggle (Only active in Studio view) -->
+      <button id="sidebarToggleBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#202636] border border-[#2d354b] text-xs font-medium text-gray-300 hover:text-white hover:bg-[#2a3246] transition" title="Toggle Deals Sidebar">
+        <span>◀</span>
+        <span class="hidden sm:inline">Deals Sidebar</span>
+      </button>
+
+      <!-- App Logo / Title -->
+      <div class="flex items-center gap-2 cursor-pointer" onclick="app.showHomeView()">
+        <span class="text-xl">🚀</span>
+        <span class="font-bold tracking-tight text-white text-base">Emailer<span class="text-red-500">Studio</span></span>
+      </div>
+
+      <!-- Current Brand Badge -->
+      <span id="brandBadge" class="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-950/70 border border-red-800/80 text-red-300">
+        Avendus Capital
+      </span>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Domain Base URL (Helper for Vercel / Netlify) -->
+      <div class="hidden md:flex items-center gap-1.5 text-xs bg-[#1a1e2b] border border-[#282f42] px-2.5 py-1 rounded-lg">
+        <span class="text-gray-400">Origin:</span>
+        <input id="customDomainInput" type="text" placeholder="https://your-app.vercel.app" class="bg-transparent text-gray-200 outline-none w-48 text-xs font-mono" />
+      </div>
+
+      <!-- Switch Brand Button -->
+      <button id="switchBrandBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#202636] border border-[#2d354b] text-xs font-medium text-gray-200 hover:text-white hover:border-gray-500 transition">
+        <span>🔄</span>
+        <span>Switch Brand</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VIEW 1: HOME SCREEN (BRAND SELECTION HUB)
+       ======================================================================== -->
+  <main id="homeView" class="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col items-center">
+    <div class="max-w-5xl w-full">
+      <!-- Hero Welcome -->
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/50 border border-red-800/60 text-red-400 text-xs font-semibold uppercase tracking-wider mb-3">
+          Ting Agency Email Platform
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
+          Emailer Automation Studio
+        </h1>
+        <p class="text-gray-400 text-sm md:text-base max-w-xl mx-auto">
+          Select a brand workspace to create, format, preview, and export 100% client-compliant HTML emailers with custom assets.
+        </p>
+      </div>
+
+      <!-- 3 Brand Option Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- 1. Avendus Emailer -->
+        <div data-brand-select="avendus" class="group bg-[#161922] border-2 border-red-600/70 hover:border-red-500 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-900/20 relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
+            Active & Ready
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-red-900/40 border border-red-700/50 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition">
+              🏦
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1 group-hover:text-red-400 transition">
+              Avendus Emailer
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+              Formal M&A deal announcements, quarterly ECM updates, and research newsletters with verified Outlook-compliant tables.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] text-gray-400">
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">5 Templates</span>
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">IB Signature</span>
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">Single &lt;p&gt;</span>
+            </div>
+          </div>
+          <button class="w-full py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-md">
+            <span>Open Avendus Studio</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        <!-- 2. Sanctum Emailer -->
+        <div data-brand-select="sanctum" class="group bg-[#161922] border border-[#232838] hover:border-gray-600 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 relative overflow-hidden flex flex-col justify-between opacity-80 hover:opacity-100">
+          <div class="absolute top-0 right-0 bg-gray-800 text-gray-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg border-l border-b border-gray-700">
+            Coming Soon
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gray-800/80 border border-gray-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition">
+              🏛️
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition">
+              Sanctum Emailer
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+              Wealth management advisory updates, portfolio digests, and high-net-worth client communications.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] text-gray-400">
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">Sanctum Theme</span>
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">AWM Footer</span>
+            </div>
+          </div>
+          <button class="w-full py-2.5 rounded-lg bg-[#202636] hover:bg-[#293246] text-gray-300 font-semibold text-xs transition border border-[#2d354b]">
+            Open Sanctum Studio
+          </button>
+        </div>
+
+        <!-- 3. Custom Emailer -->
+        <div data-brand-select="custom" class="group bg-[#161922] border border-[#232838] hover:border-gray-600 rounded-2xl p-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 relative overflow-hidden flex flex-col justify-between opacity-80 hover:opacity-100">
+          <div class="absolute top-0 right-0 bg-gray-800 text-gray-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg border-l border-b border-gray-700">
+            Blank Canvas
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-gray-800/80 border border-gray-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition">
+              ✨
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1 group-hover:text-amber-400 transition">
+              Custom Emailer
+            </h3>
+            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+              Build custom client email templates with flexible branding, custom signatures, and custom navigation bars.
+            </p>
+            <div class="flex flex-wrap gap-1.5 mb-6 text-[11px] text-gray-400">
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">Any Brand</span>
+              <span class="px-2 py-0.5 rounded bg-[#202636] border border-[#2d354b]">Custom Footer</span>
+            </div>
+          </div>
+          <button class="w-full py-2.5 rounded-lg bg-[#202636] hover:bg-[#293246] text-gray-300 font-semibold text-xs transition border border-[#2d354b]">
+            Open Custom Studio
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Jump / Recent Deals Section -->
+      <div class="border-t border-[#232838] pt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📂</span>
+            <span>Recent Emailers & Quick Edit</span>
+          </h2>
+          <span class="text-xs text-gray-400">Saved in your browser</span>
+        </div>
+
+        <div id="homeRecentGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 2: STUDIO VIEW (COLLAPSIBLE SIDEBAR + EDITOR + LIVE PREVIEW)
+       ======================================================================== -->
+  <main id="studioView" class="flex-1 flex overflow-hidden hidden">
+
+    <!-- ----------------------------------------------------------------------
+         PANEL 1: COLLAPSIBLE DEALS SIDEBAR
+         ---------------------------------------------------------------------- -->
+    <aside id="appSidebar" class="h-full border-r border-[#232838] bg-[#161922] flex flex-col shrink-0 overflow-hidden">
+      <!-- Sidebar Header -->
+      <div class="p-3.5 border-b border-[#232838] flex items-center justify-between shrink-0">
+        <div>
+          <h2 class="font-bold text-sm text-white flex items-center gap-1.5">
+            <span>📁</span>
+            <span>Saved Deals</span>
+          </h2>
+        </div>
+        <button id="newEmailerBtn" class="px-2 py-1 rounded bg-red-600 hover:bg-red-500 text-white text-xs font-semibold transition flex items-center gap-1 shadow-sm">
+          <span>+</span>
+          <span>New</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Search -->
+      <div class="p-2.5 border-b border-[#232838] shrink-0">
+        <input id="sidebarSearch" type="text" placeholder="Search emailers..." class="w-full bg-[#11131a] border border-[#2d354b] rounded-lg px-2.5 py-1.5 text-xs text-gray-200 placeholder-gray-500 outline-none focus:border-red-500 transition" />
+      </div>
+
+      <!-- Sidebar Deals List -->
+      <div id="sidebarDealList" class="flex-1 overflow-y-auto p-2.5">
+        <!-- Rendered by JS -->
+      </div>
+    </aside>
+
+    <!-- ----------------------------------------------------------------------
+         PANEL 2: FORM EDITOR (CENTER)
+         ---------------------------------------------------------------------- -->
+    <section class="w-full md:w-[480px] lg:w-[500px] xl:w-[520px] h-full border-r border-[#232838] bg-[#13151e] flex flex-col shrink-0 overflow-hidden">
+      <!-- Editor Header -->
+      <div class="px-5 py-3 border-b border-[#232838] bg-[#161922] flex items-center justify-between shrink-0">
+        <div>
+          <h2 class="text-sm font-bold text-white flex items-center gap-2">
+            <span>✏️</span>
+            <span>Emailer Editor</span>
+          </h2>
+          <p class="text-[11px] text-gray-400">Strict single &lt;p&gt; compliant structure</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Update Tab Button -->
+          <button id="updateTabBtn" class="px-2.5 py-1.5 rounded-lg bg-[#202636] border border-[#2d354b] text-xs font-medium text-gray-300 hover:text-white hover:border-gray-400 transition" title="Update the already-opened browser tab with latest changes">
+            🔄 Update Tab
+          </button>
+          
+          <!-- Generate Button -->
+          <button id="generateBtn" class="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+            <span>🚀</span>
+            <span>Generate</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Scrollable Body -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+        
+        <!-- Field 1: Folder Name -->
+        <div>
+          <label class="block font-semibold text-gray-300 mb-1">
+            1. Folder Name <span class="text-red-400">*</span>
+          </label>
+          <input id="folderNameInput" type="text" placeholder="e.g. deal_KSH_Group" class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-lg px-3 py-2 text-white outline-none focus:border-red-500 transition font-mono" />
+          <p class="text-[11px] text-gray-500 mt-1">Asset URL: <span class="text-gray-400 font-mono">/[brand]/[folder_name]/img/</span></p>
+        </div>
+
+        <!-- Field 2: Email Title -->
+        <div>
+          <label class="block font-semibold text-gray-300 mb-1">
+            2. Email Title (Title Tag) <span class="text-red-400">*</span>
+          </label>
+          <input id="emailTitleInput" type="text" placeholder="KSH Group sells 100% stake..." class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-lg px-3 py-2 text-white outline-none focus:border-red-500 transition" />
+        </div>
+
+        <!-- Field 3: Preview Text (Inbox Snippet) -->
+        <div>
+          <label class="block font-semibold text-gray-300 mb-1">
+            3. Preview Text (Inbox Snippet)
+          </label>
+          <input id="previewTextInput" type="text" placeholder="Short preview text visible in inbox..." class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-lg px-3 py-2 text-white outline-none focus:border-red-500 transition" />
+        </div>
+
+        <!-- Field 4: Banner Image -->
+        <div class="p-3 bg-[#1a1e2b] border border-[#282f42] rounded-xl space-y-2.5">
+          <label class="block font-semibold text-gray-300">
+            4. Banner Image (600px width)
+          </label>
+          
+          <div class="flex items-center gap-3">
+            <label class="cursor-pointer px-3 py-1.5 rounded-lg bg-[#252c3f] border border-[#37415c] text-white text-xs font-medium hover:bg-[#2e374f] transition flex items-center gap-1.5 shrink-0">
+              <span>📁</span>
+              <span>Upload File</span>
+              <input id="bannerFileInput" type="file" accept="image/*" class="hidden" />
+            </label>
+            <span class="text-[11px] text-gray-400">or enter image URL below:</span>
+          </div>
+
+          <input id="bannerUrlInput" type="text" placeholder="avendus/deal_KSH_Group/img/bannerNew.jpg or https://..." class="w-full bg-[#11131a] border border-[#282f42] rounded-lg px-3 py-1.5 text-xs text-gray-300 outline-none focus:border-red-500 transition font-mono" />
+          
+          <!-- Banner Preview Thumbnail -->
+          <div class="relative w-full h-24 bg-[#11131a] rounded-lg overflow-hidden border border-[#282f42] flex items-center justify-center">
+            <img id="bannerPreviewImg" src="avendus/deal_KSH_Group/img/bannerNew.jpg" alt="Banner Preview" class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <!-- Field 5: Content Area with Dual Bold Support -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="font-semibold text-gray-300">
+              5. Email Body Content <span class="text-red-400">*</span>
+            </label>
+            <span class="text-[11px] text-gray-400">Press <strong>Ctrl+B</strong> to bold</span>
+          </div>
+
+          <!-- Formatting Toolbar -->
+          <div id="editorToolbar" class="flex items-center gap-1.5 p-1.5 bg-[#1a1e2b] border border-b-0 border-[#282f42] rounded-t-lg">
+            <button data-action="bold" class="editor-toolbar-btn font-bold" title="Make selected text bold (Ctrl+B)">B</button>
+            <button data-action="italic" class="editor-toolbar-btn italic" title="Make selected text italic (Ctrl+I)">I</button>
+            <button data-action="paragraph" class="editor-toolbar-btn font-mono" title="Insert paragraph break">¶</button>
+            <span class="text-[11px] text-gray-500 ml-2">Tip: Type <strong>**bold text**</strong> directly</span>
+          </div>
+
+          <textarea id="contentInput" rows="12" placeholder="Write or paste your email paragraphs here. Highlight text and click 'B' or type **bold**..." class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-b-lg p-3 text-white outline-none focus:border-red-500 transition font-sans leading-relaxed"></textarea>
+          
+          <div class="mt-1 flex items-center justify-between text-[11px] text-gray-500">
+            <span>Guaranteed: Auto-wrapped into a strict single &lt;p&gt; tag with &lt;br/&gt;&lt;br/&gt;</span>
+          </div>
+        </div>
+
+        <!-- Field 6: Button Label & Link -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-gray-300 mb-1">
+              6. Button Label
+            </label>
+            <input id="buttonLabelInput" type="text" placeholder="Know More" class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-lg px-3 py-2 text-white outline-none focus:border-red-500 transition" />
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-300 mb-1">
+              Button Link URL
+            </label>
+            <input id="buttonLinkInput" type="text" placeholder="https://www.avendus.com" class="w-full bg-[#1a1e2b] border border-[#282f42] rounded-lg px-3 py-2 text-white outline-none focus:border-red-500 transition font-mono" />
+          </div>
+        </div>
+
+        <!-- Fixed Footer Notice -->
+        <div class="p-3 rounded-xl bg-gray-900/70 border border-gray-800 text-[11px] text-gray-400 space-y-1">
+          <div class="font-semibold text-gray-300 flex items-center gap-1.5">
+            <span>🔒</span>
+            <span>Fixed Avendus Components Included Automatically:</span>
+          </div>
+          <ul class="list-disc list-inside text-gray-500 space-y-0.5">
+            <li>Block 2: 2px solid light-grey divider line</li>
+            <li>Block 5: Official Avendus IB Signature link</li>
+            <li>Block 6: 6 Services navigation bar (About Us, Asset Mgmt, Credit, IB, Inst Equities, Wealth)</li>
+            <li>Block 7: Centered 4 Social icons (LinkedIn, Twitter, Insta, YouTube)</li>
+            <li>Block 8: Standard 12px Privacy Notice disclaimer</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         PANEL 3: LIVE PREVIEW (RIGHT)
+         ---------------------------------------------------------------------- -->
+    <section class="flex-1 h-full flex flex-col bg-[#0e1017] overflow-hidden">
+      <!-- Preview Header Controls -->
+      <div class="h-12 border-b border-[#232838] bg-[#161922] px-4 flex items-center justify-between shrink-0">
+        <!-- Viewport Toggle -->
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-400 font-medium">Preview:</span>
+          <button id="previewDesktopBtn" class="device-toggle-btn active">
+            🖥️ Desktop (600px)
+          </button>
+          <button id="previewMobileBtn" class="device-toggle-btn">
+            📱 Mobile (380px)
+          </button>
+        </div>
+
+        <!-- Download ZIP Button -->
+        <div class="flex items-center gap-2">
+          <button id="downloadZipBtn" disabled class="px-4 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-xs font-bold transition flex items-center gap-1.5 opacity-50 cursor-not-allowed" title="Click 'Generate Emailer' first to enable download">
+            <span>💾</span>
+            <span>Download ZIP</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Iframe Preview Container -->
+      <div id="previewContainer" class="flex-1">
+        <iframe id="previewIframe" title="Emailer Live Preview"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       TOAST NOTIFICATION COMPONENT
+       ======================================================================== -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition-all duration-300 hidden">
+    <div class="bg-[#1f2433] border border-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-medium">
+      <span class="text-base text-emerald-400">✓</span>
+      <span id="toastMessage">Action completed</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="js/zip-builder.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

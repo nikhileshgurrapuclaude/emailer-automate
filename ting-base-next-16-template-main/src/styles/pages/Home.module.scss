@@ -1,0 +1,6 @@
+@use "@/styles/helpers/helpers.scss" as *;
+
+.HomePage {
+	min-height: 100vh;
+	@extend %f_c_aj_center;
+}

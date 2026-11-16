@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Emailer Automation Studio - Custom Stylesheet
+   ========================================================================== */
+
+:root {
+  --primary-red: #cc1919;
+  --primary-hover: #b01515;
+  --bg-dark: #0f1117;
+  --panel-bg: #161922;
+  --panel-border: #232838;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: #2d3345;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f4761;
+}
+
+/* Sidebar Collapsible Behavior */
+#appSidebar {
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease, opacity 0.2s ease;
+  width: 280px;
+  min-width: 280px;
+}
+
+#appSidebar.collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* Sidebar Deal Item */
+.sidebar-deal-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: #1a1e2b;
+  border: 1px solid #282f42;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-bottom: 8px;
+}
+
+.sidebar-deal-item:hover {
+  border-color: #4b5563;
+  background-color: #202636;
+}
+
+.sidebar-deal-item.active {
+  background-color: #252b3d;
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 1px var(--primary-red);
+}
+
+/* Toolbar Controls */
+.editor-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #202636;
+  border: 1px solid #2d354b;
+  color: #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editor-toolbar-btn:hover {
+  background: #2c354e;
+  border-color: #4f5a7a;
+  color: #ffffff;
+}
+
+/* Button Active ZIP Pulse */
+.btn-active-zip {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  animation: pulseZip 2s infinite;
+}
+
+.btn-active-zip:hover {
+  background-color: #047857 !important;
+}
+
+@keyframes pulseZip {
+  0% {
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(5, 150, 105, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0);
+  }
+}
+
+/* Device Preview Toggle */
+.device-toggle-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  background: #1a1e2b;
+  border: 1px solid #282f42;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.device-toggle-btn:hover {
+  color: #ffffff;
+  background: #22293b;
+}
+
+.device-toggle-btn.active {
+  color: #ffffff;
+  background: var(--primary-red);
+  border-color: var(--primary-red);
+}
+
+/* Iframe Container & Viewport Frames */
+#previewContainer {
+  background: #12141c;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#previewIframe {
+  width: 100%;
+  max-width: 640px;
+  min-height: 850px;
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid #2d3345;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  transition: max-width 0.3s ease, border-radius 0.3s ease;
+}
+
+/* Mobile Frame Simulation */
+#previewContainer.mobile-frame #previewIframe {
+  max-width: 385px;
+  border-radius: 36px;
+  border: 8px solid #282f42;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* Recent Card Hover */
+.recent-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+}
