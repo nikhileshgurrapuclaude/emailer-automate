@@ -1,0 +1,116 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.75rem;
+  background: #0a0b0e;
+  border-bottom: 1px solid #1f232d;
+  color: #ffffff;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+
+  .rocket {
+    filter: drop-shadow(0 0 8px rgba(254, 212, 48, 0.6));
+  }
+
+  .accent {
+    color: #FED430;
+  }
+
+  &:hover {
+    color: #FED430;
+  }
+}
+
+.brandBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 9999px;
+  background: #FED430;
+  color: #000000;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 14px rgba(254, 212, 48, 0.3);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.originWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: #9ea4b3;
+
+  label {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  input {
+    background: #12141a;
+    border: 1px solid #232732;
+    border-radius: 8px;
+    padding: 0.4rem 0.75rem;
+    color: #ffffff;
+    font-size: 0.825rem;
+    font-family: monospace;
+    width: 290px;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #FED430;
+      box-shadow: 0 0 10px rgba(254, 212, 48, 0.2);
+    }
+  }
+}
+
+.switchBrandBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #12141a;
+  border: 1px solid #282c37;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1c202a;
+    border-color: #FED430;
+    color: #FED430;
+    box-shadow: 0 0 12px rgba(254, 212, 48, 0.2);
+  }
+}

@@ -1,0 +1,7 @@
+@use "../helpers/mixins/media.scss" as *;
+
+// For default body copy font
+.fs_18 {
+	font-size: 18px;
+	line-height: calc(27 / 18);
+}

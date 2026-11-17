@@ -1,0 +1,157 @@
+.homeContainer {
+  min-height: 100vh;
+  background: #0a0b0e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex-grow: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 6rem;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.pillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 1rem;
+  background: #FED430;
+  color: #000000;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 20px rgba(254, 212, 48, 0.35);
+}
+
+.title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+
+  .highlight {
+    color: #FED430;
+    text-shadow: 0 0 25px rgba(254, 212, 48, 0.4);
+  }
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #9ea4b3;
+  max-width: 660px;
+  margin: 0 auto;
+}
+
+.brandGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 4.5rem;
+}
+
+.recentSection {
+  border-top: 1px solid #1f232d;
+  padding-top: 3rem;
+}
+
+.recentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.recentTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+
+  span {
+    color: #FED430;
+  }
+}
+
+.recentSubtitle {
+  font-size: 0.825rem;
+  color: #646b7a;
+}
+
+.recentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.recentCard {
+  background: #12141a;
+  border: 1px solid #232732;
+  border-radius: 12px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+
+  &:hover {
+    border-color: #FED430;
+    box-shadow: 0 8px 24px rgba(254, 212, 48, 0.15);
+    transform: translateY(-3px);
+  }
+}
+
+.recentFolderName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.recentEmailTitle {
+  font-size: 0.825rem;
+  color: #9ea4b3;
+  margin-bottom: 1rem;
+  line-height: 1.45;
+}
+
+.recentMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #646b7a;
+}
+
+.openBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #FED430;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+
+  .recentCard:hover & {
+    transform: translateX(3px);
+  }
+}

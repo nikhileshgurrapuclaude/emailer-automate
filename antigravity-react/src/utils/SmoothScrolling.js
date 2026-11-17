@@ -1,0 +1,15 @@
+// OTHERS //
+import Lenis from "lenis";
+
+/** Function for smooth scrolling of the website */
+export default function SmoothScrolling() {
+	const lenis = new Lenis();
+	
+	/** Function For Smooth Scroll */
+	function raf(time) {
+		lenis.raf(time);
+		requestAnimationFrame(raf);
+	}
+	
+	requestAnimationFrame(raf);
+}

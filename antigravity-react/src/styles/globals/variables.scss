@@ -1,0 +1,55 @@
+$browser-prefixes: false !default;
+
+:root {
+	// Fonts
+	--font-primary: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	--font-secondary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+	// Signature Vibrant Yellow & Contrast Palette
+	--color_primary: #FED430;
+	--color_primary_hover: #FFDF5A;
+	--color_primary_dark: #D8B220;
+	--color_primary_glow: rgba(254, 212, 48, 0.28);
+	--color_primary_bg: rgba(254, 212, 48, 0.12);
+
+	// Secondary colors
+	--color_secondary: #587b7f;
+	--color_secondary_light: #6f9ca0;
+
+	// Dark theme surfaces
+	--bg_main: #0a0b0e;
+	--bg_surface: #12141a;
+	--bg_surface_elevated: #1a1d24;
+	--border_subtle: #232732;
+	--border_highlight: rgba(254, 212, 48, 0.4);
+
+	// Neutral colors
+	--text_primary: #ffffff;
+	--text_secondary: #9ea4b3;
+	--text_muted: #646b7a;
+	--color_black: #000000;
+	--color_white: #ffffff;
+
+	// UI Elements
+	--radius_sm: 6px;
+	--radius_md: 10px;
+	--radius_lg: 16px;
+	--radius_pill: 9999px;
+
+	// Extras
+	--container_width: 100%;
+	--container_left_space: calc((100% - var(--container_width)) / 2);
+	--transition: ease all 300ms;
+
+	@media (min-width: 768px) and (max-width: 991px) {
+		--container_width: 750px;
+	}
+
+	@media (min-width: 992px) and (max-width: 1199px) {
+		--container_width: 970px;
+	}
+
+	@media (min-width: 1200px) {
+		--container_width: 1170px;
+	}
+}
