@@ -103,16 +103,18 @@ export const TemplateGenerator = {
 
     // Banner image resolution
     let bannerSrc;
+    const cleanBannerFile = (bannerFilename || 'bannerNew.jpg').replace(/^\/+/, '');
+
     if (useOfflineRelative) {
-      bannerSrc = `img/${bannerFilename}`;
-    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:') || bannerUrl.startsWith('blob:'))) {
+      bannerSrc = `img/${cleanBannerFile}`;
+    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://')) && !bannerUrl.startsWith('blob:')) {
       bannerSrc = bannerUrl;
-    } else if (bannerUrl && bannerUrl.startsWith('/')) {
+    } else if (bannerUrl && bannerUrl.startsWith('/') && !bannerUrl.startsWith('/blob:')) {
       bannerSrc = `${origin}${bannerUrl}`;
-    } else if (bannerUrl && bannerUrl.trim().length > 0) {
+    } else if (bannerUrl && bannerUrl.trim().length > 0 && !bannerUrl.startsWith('data:') && !bannerUrl.startsWith('blob:')) {
       bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
     } else {
-      bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerFilename}`;
+      bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${cleanBannerFile}`;
     }
 
     const sigImg = resolveImg('IBSignature.png');

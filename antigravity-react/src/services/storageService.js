@@ -10,7 +10,7 @@ export const StorageService = {
    * @param {File} file
    * @param {string} brand
    * @param {string} folderName
-   * @returns {Promise<{ url: string, filename: string, base64: string }>}
+   * @returns {Promise<{ url: string, serverPath: string, previewUrl: string, filename: string, base64: string }>}
    */
   async uploadBanner(file, brand = 'avendus', folderName = 'deal_emailer') {
     if (!file) throw new Error('No file selected.');
@@ -19,7 +19,7 @@ export const StorageService = {
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .replace(/\s+/g, '_');
 
-    // Convert file to Base64 data URL for instant resilient preview
+    // Convert file to Base64 data URL for instant resilient preview and ZIP packaging
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => resolve(e.target.result);
@@ -28,9 +28,15 @@ export const StorageService = {
     });
 
     const objectUrl = URL.createObjectURL(file);
+    const cleanBrand = (brand || 'avendus').toLowerCase();
+    const cleanFolder = (folderName || 'deal_emailer').trim();
+
+    // The canonical server path - matching all other image links
+    const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
     return {
-      url: base64,
+      url: serverPath,
+      serverPath: serverPath,
       previewUrl: objectUrl,
       filename: cleanFilename,
       base64: base64,
@@ -48,9 +54,9 @@ export const StorageService = {
    * Resolve public master footer asset URL
    */
   getFooterAssetUrl(brand = 'avendus', filename) {
-    const origin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate-antigravity-html.vercel.app';
+    const origin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate.vercel.app';
     const cleanBrand = (brand || 'avendus').toLowerCase();
-    return `${origin}/${cleanBrand}/deal_KSH_Group/img/${filename}`;
+    return `${origin}/${cleanBrand}/img/${filename}`;
   },
 };
 

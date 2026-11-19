@@ -57,16 +57,23 @@ export async function downloadEmailerZip({ deal, htmlContent }) {
   const imgFolder = zip.folder("img");
 
   // 3. Fetch & add banner image
-  const bannerUrl = deal.banner_url || deal.bannerUrl;
-  if (bannerUrl) {
-    const bannerBuffer = await fetchImageBuffer(bannerUrl);
+  const bannerSource = deal.banner_base64 || deal.banner_preview_url || deal.banner_url || deal.bannerUrl;
+  if (bannerSource) {
+    const bannerBuffer = await fetchImageBuffer(bannerSource);
     if (bannerBuffer) {
       let ext = "jpg";
-      if (bannerUrl.includes(".png")) ext = "png";
-      else if (bannerUrl.includes(".webp")) ext = "webp";
+      const filename = deal.banner_filename || deal.bannerFilename || "";
+      if (filename.endsWith(".png") || (typeof bannerSource === "string" && (bannerSource.includes(".png") || bannerSource.startsWith("data:image/png")))) {
+        ext = "png";
+      } else if (filename.endsWith(".webp") || (typeof bannerSource === "string" && bannerSource.includes(".webp"))) {
+        ext = "webp";
+      }
       imgFolder.file(`banner.${ext}`, bannerBuffer);
       // Backwards compatibility with legacy templates
       imgFolder.file("bannerNew.jpg", bannerBuffer);
+      if (filename && filename !== `banner.${ext}` && filename !== "bannerNew.jpg") {
+        imgFolder.file(filename, bannerBuffer);
+      }
     }
   }
 

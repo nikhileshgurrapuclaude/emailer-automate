@@ -22,10 +22,28 @@ export default function StudioEditor({
   const updateField = (field, value) => {
     if (onChange) {
       const updated = { ...deal, [field]: value };
-      if (field === "folder_name") updated.folderName = value;
+      if (field === "folder_name") {
+        updated.folderName = value;
+        const brandSlug = deal.brand_slug || deal.brand || "avendus";
+        const oldFolder = deal.folder_name || deal.folderName;
+        // If banner was pointing to old folder, automatically update it to match new folder
+        if (oldFolder && deal.banner_url && deal.banner_url.startsWith(`/${brandSlug}/${oldFolder}/img/`)) {
+          const filename = deal.banner_url.split("/").pop();
+          const newPath = `/${brandSlug}/${value}/img/${filename}`;
+          updated.banner_url = newPath;
+          updated.bannerUrl = newPath;
+        }
+      }
       if (field === "email_title") updated.title = value;
       if (field === "preview_text") updated.previewText = value;
-      if (field === "banner_url") updated.bannerUrl = value;
+      if (field === "banner_url") {
+        updated.bannerUrl = value;
+        if (!value) {
+          updated.banner_preview_url = "";
+          updated.bannerPreviewUrl = "";
+          updated.banner_base64 = "";
+        }
+      }
       if (field === "body_content") updated.content = value;
       if (field === "cta_text") updated.buttonLabel = value;
       if (field === "cta_url") updated.buttonLink = value;
@@ -79,8 +97,21 @@ export default function StudioEditor({
       customName: "banner",
     });
 
-    if (uploadResult?.url) {
-      updateField("banner_url", uploadResult.url);
+    if (uploadResult?.serverPath) {
+      if (onChange) {
+        onChange({
+          ...deal,
+          // Server path matching all other image links
+          banner_url: uploadResult.serverPath,
+          bannerUrl: uploadResult.serverPath,
+          banner_filename: uploadResult.filename,
+          bannerFilename: uploadResult.filename,
+          // Preview and base64 for instant thumbnail and zip bundling
+          banner_preview_url: uploadResult.previewUrl,
+          bannerPreviewUrl: uploadResult.previewUrl,
+          banner_base64: uploadResult.base64,
+        });
+      }
     }
   };
 
@@ -88,6 +119,7 @@ export default function StudioEditor({
   const emailTitle = deal.email_title || deal.title || "";
   const previewText = deal.preview_text || deal.previewText || "";
   const bannerUrl = deal.banner_url || deal.bannerUrl || "";
+  const bannerPreview = deal.banner_preview_url || deal.bannerPreviewUrl || bannerUrl;
   const bodyContent = deal.body_content || deal.content || "";
   const ctaText = deal.cta_text || deal.buttonLabel || "";
   const ctaUrl = deal.cta_url || deal.buttonLink || "";
@@ -186,14 +218,22 @@ export default function StudioEditor({
               className={styles.input}
               value={bannerUrl}
               onChange={(e) => updateField("banner_url", e.target.value)}
-              placeholder="or enter image URL (e.g. /avendus/deal_KSH_Group/img/bannerNew.jpg)"
+              placeholder="e.g. /avendus/deal_ArkaFincap/img/bannerNew.jpg"
             />
           </div>
 
-          {bannerUrl && (
+          {bannerPreview && (
             <div className={styles.bannerPreviewWrapper}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={bannerUrl} alt="Banner Preview" />
+              <img
+                src={bannerPreview}
+                alt="Banner Preview"
+                onError={(e) => {
+                  if (!e.target.src.endsWith("/avendus/img/bannerNew.jpg")) {
+                    e.target.src = "/avendus/img/bannerNew.jpg";
+                  }
+                }}
+              />
             </div>
           )}
         </div>
