@@ -5,6 +5,54 @@
 
 export const SEED_DEALS = [
   {
+    id: 'deal_arka_fincap',
+    brand_id: 'brand_avendus',
+    brand_slug: 'avendus',
+    brand: 'avendus',
+    folder_name: 'deal_ArkaFincap',
+    folderName: 'deal_ArkaFincap',
+    email_title: 'Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG',
+    title: 'Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG',
+    preview_text: 'Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG',
+    previewText: 'Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG',
+    banner_url: '/avendus/deal_ArkaFincap/img/bannerNew.jpg',
+    bannerUrl: '/avendus/deal_ArkaFincap/img/bannerNew.jpg',
+    bannerFilename: 'bannerNew.jpg',
+    body_content: `**Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG**
+
+Arka Fincap Limited (“Arka”), a Kirloskar Group promoted non-banking financial company (NBFC), announced it has signed definitive agreements with The Rise Funds, TPG’s multi-sector global impact investing strategy. The strategic investment comprises an initial investment of INR 525 cr, with the potential for an additional INR 275 cr through a subsequent tranche, subject to the achievement of specified business milestones aligned with Arka’s growth strategy and requisite regulatory approvals.
+
+**Avendus Capital acted as the exclusive financial advisor to Arka Fincap Limited on this transaction.**
+
+**Gauri Kirloskar, Vice Chairperson and Managing Director at Kirloskar Oil Engines** said, “As a Group, we have always placed great value on enduring partnerships and the institution-building ethos of creating businesses that stand the test of time. We seek partners who share this philosophy, and we see a strong alignment with TPG’s approach. We believe this partnership marks the beginning of a meaningful, long-term relationship that will create lasting impact for Arka, TPG and all our stakeholders, most importantly our customers across the country.”
+
+**Samrat Gupta, Managing Director at Arka Fincap** said, “At Arka, we believe resilient financial institutions are built on capital anchored in character, customer servicing and unwavering tech-led credit discipline. Crossing INR 1,000 cr in secured retail assets is a defining milestone in our ambition to build a formidable, future-ready financial enterprise, serving entrepreneurial aspirations of our country. Kirloskar Group’s established legacy and TPG’s global investment expertise create a trustworthy platform for Arka’s next phase of growth.”
+
+**Anshul Agarwal, Managing Director and Head, Financial Institutions Group, Avendus Capital** said, “Under Samrat’s leadership, Arka has built an impressive retail franchise in a short span of 18 months, driven by its focus on underserved markets and customers. The investment from TPG is a strong endorsement of Arka’s growth potential and will support Arka in its path to portfolio retailisation. We are pleased to have advised Arka Fincap on this transaction, positioning the business to build on its existing strengths and capture the significant opportunity in India’s secured lending market, and thank the Kirloskar Group for their trust and confidence in Avendus.”`,
+    content: `**Avendus Capital advises Kirloskar-backed Arka Fincap on its investment from TPG**
+
+Arka Fincap Limited (“Arka”), a Kirloskar Group promoted non-banking financial company (NBFC), announced it has signed definitive agreements with The Rise Funds, TPG’s multi-sector global impact investing strategy. The strategic investment comprises an initial investment of INR 525 cr, with the potential for an additional INR 275 cr through a subsequent tranche, subject to the achievement of specified business milestones aligned with Arka’s growth strategy and requisite regulatory approvals.
+
+**Avendus Capital acted as the exclusive financial advisor to Arka Fincap Limited on this transaction.**
+
+**Gauri Kirloskar, Vice Chairperson and Managing Director at Kirloskar Oil Engines** said, “As a Group, we have always placed great value on enduring partnerships and the institution-building ethos of creating businesses that stand the test of time. We seek partners who share this philosophy, and we see a strong alignment with TPG’s approach. We believe this partnership marks the beginning of a meaningful, long-term relationship that will create lasting impact for Arka, TPG and all our stakeholders, most importantly our customers across the country.”
+
+**Samrat Gupta, Managing Director at Arka Fincap** said, “At Arka, we believe resilient financial institutions are built on capital anchored in character, customer servicing and unwavering tech-led credit discipline. Crossing INR 1,000 cr in secured retail assets is a defining milestone in our ambition to build a formidable, future-ready financial enterprise, serving entrepreneurial aspirations of our country. Kirloskar Group’s established legacy and TPG’s global investment expertise create a trustworthy platform for Arka’s next phase of growth.”
+
+**Anshul Agarwal, Managing Director and Head, Financial Institutions Group, Avendus Capital** said, “Under Samrat’s leadership, Arka has built an impressive retail franchise in a short span of 18 months, driven by its focus on underserved markets and customers. The investment from TPG is a strong endorsement of Arka’s growth potential and will support Arka in its path to portfolio retailisation. We are pleased to have advised Arka Fincap on this transaction, positioning the business to build on its existing strengths and capture the significant opportunity in India’s secured lending market, and thank the Kirloskar Group for their trust and confidence in Avendus.”`,
+    cta_text: 'Know More',
+    buttonLabel: 'Know More',
+    cta_url: 'https://www.avendus.com/transactions/investment-banking/financial-institutions-group/private-equity/avendus-capital-advises-kirloskar-backed-arka-fincap-on-its-investment-from-tpg',
+    buttonLink: 'https://www.avendus.com/transactions/investment-banking/financial-institutions-group/private-equity/avendus-capital-advises-kirloskar-backed-arka-fincap-on-its-investment-from-tpg',
+    signoff_text: 'Best regards,',
+    signature_name: 'Avendus Capital Team',
+    buttonRadius: '3px',
+    buttonColor: '#cd2027',
+    created_at: '2026-11-16T10:00:00.000Z',
+    updated_at: '2026-11-16T10:00:00.000Z',
+    lastModified: '2026-11-16T10:00:00.000Z',
+  },
+  {
     id: 'deal_ksh_group',
     brand_id: 'brand_avendus',
     brand_slug: 'avendus',

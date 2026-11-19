@@ -6,7 +6,7 @@
 
 import { SEED_DEALS } from "@/data/seedDeals";
 
-const STORAGE_KEY = "emailer_studio_deals_v6";
+const STORAGE_KEY = "emailer_studio_deals_v7";
 
 function normalizeDeal(deal) {
   if (!deal) return null;

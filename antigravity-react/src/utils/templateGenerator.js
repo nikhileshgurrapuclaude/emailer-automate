@@ -94,21 +94,11 @@ export const TemplateGenerator = {
           ? window.location.origin 
           : defaultOrigin);
 
-    // List of known pre-deployed deals
-    const KNOWN_SERVER_DEALS = [
-      'deal_KSH_Group',
-      'demo_emailer',
-      'ecm_newsletter_march_2026',
-      'ets_newsletter_march_2026',
-      'new_age_report'
-    ];
-
     const resolveImg = (filename) => {
       if (useOfflineRelative) {
         return `img/${filename}`;
       }
-      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-      return `${origin}/${cleanBrand}/${serverFolder}/img/${filename}`;
+      return `${origin}/${cleanBrand}/${cleanFolder}/img/${filename}`;
     };
 
     // Banner image resolution
@@ -120,11 +110,9 @@ export const TemplateGenerator = {
     } else if (bannerUrl && bannerUrl.startsWith('/')) {
       bannerSrc = `${origin}${bannerUrl}`;
     } else if (bannerUrl && bannerUrl.trim().length > 0) {
-      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-      bannerSrc = `${origin}/${cleanBrand}/${serverFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
+      bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
     } else {
-      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-      bannerSrc = `${origin}/${cleanBrand}/${serverFolder}/img/${bannerFilename}`;
+      bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerFilename}`;
     }
 
     const sigImg = resolveImg('IBSignature.png');
@@ -322,16 +310,18 @@ export const TemplateGenerator = {
                         </tbody>
                       </table>
 
-                      <!-- BLOCK 5: SIGNATURE & FOOTER NAVIGATION -->
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%">
+                      <!-- BLOCK 5: SIGNATURE -->
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width: 100%">
                         <tbody class="mcnImageBlockOuter">
                           <tr>
-                            <td valign="top" style="mso-line-height-rule: exactly; padding: 9px" class="mcnImageBlockInner">
-                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%">
+                            <td valign="top" style="padding: 0px" class="mcnImageBlockInner">
+                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width: 100%">
                                 <tbody>
                                   <tr>
-                                    <td class="mcnImageContent" valign="top" style="mso-line-height-rule: exactly; padding-right: 9px; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align: center;">
-                                      <img align="center" alt="Signature" src="${sigImg}" width="564" style="border: 0; height: auto; outline: none; text-decoration: none; max-width: 1200px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" />
+                                    <td class="mcnImageContent" valign="top" style="padding-right: 0px; padding-left: 0px; padding-top: 0; padding-bottom: 0; text-align: center;">
+                                      <a href="http://www.avendus.com" target="_blank">
+                                        <img align="center" alt="" src="${sigImg}" width="600" style="max-width: 1000px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" />
+                                      </a>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -341,21 +331,31 @@ export const TemplateGenerator = {
                         </tbody>
                       </table>
 
-                      <!-- BRAND NAVIGATION LINKS -->
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageGroupBlock" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                        <tbody class="mcnImageGroupBlockOuter">
+                      <!-- BLOCK 6: 6 BUSINESS UNIT ICONS -->
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width: 100%">
+                        <tbody class="mcnImageBlockOuter">
                           <tr>
-                            <td valign="top" style="mso-line-height-rule: exactly; padding: 9px" class="mcnImageGroupBlockInner">
-                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageGroupContentContainer" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                            <td valign="top" class="mcnImageBlockInner">
+                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width: 100%">
                                 <tbody>
                                   <tr>
-                                    <td class="mcnImageGroupContent" valign="top" style="mso-line-height-rule: exactly; padding-left: 9px; padding-top: 0; padding-bottom: 0; text-align: center;">
-                                      <a href="https://www.avendus.com/about-us" target="_blank"><img alt="About Us" src="${aboutImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
-                                      <a href="https://www.avendus.com/asset-management" target="_blank"><img alt="Asset Management" src="${amImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
-                                      <a href="https://www.avendus.com/credit-solutions" target="_blank"><img alt="Credit Solutions" src="${csImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
-                                      <a href="https://www.avendus.com/investment-banking" target="_blank"><img alt="Investment Banking" src="${ibImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
-                                      <a href="https://www.avendus.com/institutional-equities" target="_blank"><img alt="Institutional Equities" src="${ieImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
-                                      <a href="https://www.avendus.com/wealth-management" target="_blank"><img alt="Wealth Management" src="${wmImg}" width="80" style="border: 0; height: auto; outline: none; text-decoration: none; display: inline !important;" class="mcnImage" /></a>
+                                    <td style="width: 86px">
+                                      <a href="https://www.avendus.com/india/about-us" target="_blank"><img src="${aboutImg}" style="display: block" height="28" width="86" /></a>
+                                    </td>
+                                    <td style="width: 103px">
+                                      <a href="https://www.avendus.com/india/asset-management" target="_blank"><img src="${amImg}" style="display: block" height="28" width="103" /></a>
+                                    </td>
+                                    <td style="width: 85px">
+                                      <a href="https://www.avendus.com/india/credit-solutions" target="_blank"><img src="${csImg}" style="display: block" height="28" width="85" /></a>
+                                    </td>
+                                    <td style="width: 106px">
+                                      <a href="https://www.avendus.com/india/investment-banking" target="_blank"><img src="${ibImg}" style="display: block" height="28" width="106" /></a>
+                                    </td>
+                                    <td style="width: 107px">
+                                      <a href="https://www.avendus.com/india/institutional-equities" target="_blank"><img src="${ieImg}" style="display: block" height="28" width="107" /></a>
+                                    </td>
+                                    <td style="width: 113px">
+                                      <a href="https://www.avendus.com/india/wealth-management" target="_blank"><img src="${wmImg}" style="display: block" height="28" width="113" /></a>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -365,20 +365,28 @@ export const TemplateGenerator = {
                         </tbody>
                       </table>
 
-                      <!-- SOCIAL ICONS -->
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageGroupBlock" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                        <tbody class="mcnImageGroupBlockOuter">
+                      <!-- BLOCK 7: SOCIAL ICONS -->
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width: 100%">
+                        <tbody class="mcnImageBlockOuter">
                           <tr>
-                            <td valign="top" style="mso-line-height-rule: exactly; padding: 9px" class="mcnImageGroupBlockInner">
-                              <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                            <td valign="top" style="padding-top: 30px; padding-bottom: 30px" class="mcnImageBlockInner">
+                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width: 100%">
                                 <tbody>
                                   <tr>
-                                    <td valign="top" style="mso-line-height-rule: exactly; text-align: center;">
-                                      <a href="https://www.linkedin.com/company/avendus/" target="_blank"><img alt="LinkedIn" src="${liImg}" width="24" style="border: 0; outline: none; text-decoration: none; display: inline !important; margin: 0 4px;" /></a>
-                                      <a href="https://twitter.com/AvendusCapital" target="_blank"><img alt="Twitter" src="${twImg}" width="24" style="border: 0; outline: none; text-decoration: none; display: inline !important; margin: 0 4px;" /></a>
-                                      <a href="https://www.instagram.com/avenduscapital/" target="_blank"><img alt="Instagram" src="${inImg}" width="24" style="border: 0; outline: none; text-decoration: none; display: inline !important; margin: 0 4px;" /></a>
-                                      <a href="https://www.youtube.com/@AvendusCapital" target="_blank"><img alt="YouTube" src="${ytImg}" width="24" style="border: 0; outline: none; text-decoration: none; display: inline !important; margin: 0 4px;" /></a>
+                                    <td style="width: 200px"></td>
+                                    <td style="width: 50px">
+                                      <a href="http://www.linkedin.com/company/avendus" target="_blank"><img src="${liImg}" style="display: block" height="24" width="24" /></a>
                                     </td>
+                                    <td style="width: 50px">
+                                      <a href="http://www.twitter.com/avendus" target="_blank"><img src="${twImg}" style="display: block" height="24" width="24" /></a>
+                                    </td>
+                                    <td style="width: 50px">
+                                      <a href="http://instagram.com/avendusgroup" target="_blank"><img src="${inImg}" style="display: block" height="24" width="24" /></a>
+                                    </td>
+                                    <td style="width: 50px">
+                                      <a href="https://www.youtube.com/channel/UCIcPdtsCqcRYfYf0s-wMB_Q/featured" target="_blank"><img src="${ytImg}" style="display: block" height="24" width="24" /></a>
+                                    </td>
+                                    <td style="width: 200px"></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -387,20 +395,34 @@ export const TemplateGenerator = {
                         </tbody>
                       </table>
 
-                      <!-- LEGAL PRIVACY FOOTER -->
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%">
+                      <!-- BLOCK 8: PRIVACY NOTICE -->
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width: 100%">
                         <tbody class="mcnTextBlockOuter">
                           <tr>
-                            <td valign="top" class="mcnTextBlockInner" style="mso-line-height-rule: exactly; padding-top: 9px">
-                              <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 100%; min-width: 100%" width="100%" class="mcnTextContentContainer">
+                            <td valign="top" class="mcnTextBlockInner" style="padding-top: 9px">
+                              <!--[if mso]>
+                              <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                              <tr>
+                              <![endif]-->
+                              <!--[if mso]>
+                              <td valign="top" width="600" style="width:600px;">
+                              <![endif]-->
+                              <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%; min-width: 100%" width="100%" class="mcnTextContentContainer">
                                 <tbody>
                                   <tr>
-                                    <td valign="top" class="mcnTextContent" style="mso-line-height-rule: exactly; padding-top: 0; padding-right: 18px; padding-bottom: 9px; padding-left: 18px; text-align: center; font-size: 11px; color: #777777;">
-                                      To view our updated Privacy Notice, please <a href="https://www.avendus.com/india/privacy-policy" target="_blank" style="color: #777777; text-decoration: underline;">Click Here</a>
+                                    <td valign="top" class="mcnTextContent" style="padding-top: 0; padding-right: 18px; padding-bottom: 9px; padding-left: 18px; text-align: center;">
+                                      <span style="font-size: 12px">To view our updated Privacy Notice, please </span><a href="https://www.avendus.com/india/privacy-policy" target="_blank"><span style="font-size: 12px">Click Here</span></a>
                                     </td>
                                   </tr>
                                 </tbody>
                               </table>
+                              <!--[if mso]>
+                              </td>
+                              <![endif]-->
+                              <!--[if mso]>
+                              </tr>
+                              </table>
+                              <![endif]-->
                             </td>
                           </tr>
                         </tbody>
