@@ -34,6 +34,22 @@ export const StorageService = {
     // The canonical server path - matching all other image links
     const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
+    // Upload directly to server route /api/upload
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('brand', cleanBrand);
+      formData.append('folder', cleanFolder);
+      formData.append('filename', cleanFilename);
+
+      await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (uploadErr) {
+      console.warn('Server upload notice:', uploadErr);
+    }
+
     return {
       url: serverPath,
       serverPath: serverPath,
@@ -48,6 +64,46 @@ export const StorageService = {
    */
   async uploadImage({ file, brandSlug = 'avendus', folderName = 'deal_emailer' }) {
     return this.uploadBanner(file, brandSlug, folderName);
+  },
+
+  /**
+   * Upload banner to server via base64 or file (e.g. when clicked Generate or Update Tab)
+   */
+  async uploadBannerToServer({ file, base64, brand = 'avendus', folderName = 'deal_emailer', filename = 'banner.jpg' }) {
+    const cleanBrand = (brand || 'avendus').toLowerCase();
+    const cleanFolder = (folderName || 'deal_emailer').trim();
+    const cleanFilename = (filename || 'banner.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
+    const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
+
+    try {
+      const formData = new FormData();
+      if (file) {
+        formData.append('file', file);
+      } else if (base64) {
+        formData.append('base64', base64);
+      }
+      formData.append('brand', cleanBrand);
+      formData.append('folder', cleanFolder);
+      formData.append('filename', cleanFilename);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      return {
+        success: data?.success || true,
+        serverPath: data?.serverPath || serverPath,
+        url: data?.url || serverPath,
+      };
+    } catch (err) {
+      console.warn('Banner upload to server returned:', err);
+      return {
+        success: false,
+        serverPath,
+        url: serverPath,
+      };
+    }
   },
 
   /**

@@ -6,7 +6,7 @@
 
 import { SEED_DEALS } from "@/data/seedDeals";
 
-const STORAGE_KEY = "emailer_studio_deals_v7";
+const STORAGE_KEY = "emailer_studio_deals_v8";
 
 function normalizeDeal(deal) {
   if (!deal) return null;
@@ -37,6 +37,12 @@ function normalizeDeal(deal) {
     previewText: preview,
     banner_url: banner,
     bannerUrl: banner,
+    banner_filename: deal.banner_filename || deal.bannerFilename || (banner.split('/').pop() || 'bannerNew.jpg'),
+    bannerFilename: deal.banner_filename || deal.bannerFilename || (banner.split('/').pop() || 'bannerNew.jpg'),
+    banner_preview_url: deal.banner_preview_url || deal.bannerPreviewUrl || '',
+    bannerPreviewUrl: deal.banner_preview_url || deal.bannerPreviewUrl || '',
+    banner_base64: deal.banner_base64 || deal.bannerBase64 || '',
+    bannerBase64: deal.banner_base64 || deal.bannerBase64 || '',
     body_content: body,
     content: body,
     cta_text: ctaText,

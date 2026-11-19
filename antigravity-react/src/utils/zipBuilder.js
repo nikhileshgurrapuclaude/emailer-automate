@@ -1,5 +1,6 @@
 // UTILS //
 import JSZip from "jszip";
+import { generateEmailerHtml } from "./templateGenerator";
 
 /**
  * List of standard Avendus footer images required in every emailer ZIP
@@ -50,8 +51,9 @@ export async function downloadEmailerZip({ deal, htmlContent }) {
   const zip = new JSZip();
   const folderName = deal.folder_name || deal.folderName || "emailer";
 
-  // 1. Add index.html at root of ZIP
-  zip.file("index.html", htmlContent);
+  // 1. Add index.html at root of ZIP with offline relative paths (img/...)
+  const offlineHtml = generateEmailerHtml(deal, { useOfflineRelativePaths: true });
+  zip.file("index.html", offlineHtml || htmlContent);
 
   // 2. Create img folder
   const imgFolder = zip.folder("img");

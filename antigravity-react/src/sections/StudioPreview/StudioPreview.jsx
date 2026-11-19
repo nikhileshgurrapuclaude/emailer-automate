@@ -13,6 +13,7 @@ import styles from "./StudioPreview.module.scss";
 export default function StudioPreview({
   deal = {},
   htmlContent = "",
+  previewHtml = "",
   onNotify,
 }) {
   const [viewMode, setViewMode] = useState("desktop"); // "desktop" | "mobile"
@@ -110,7 +111,7 @@ export default function StudioPreview({
         <div className={`${styles.iframeWrapper} ${styles[viewMode]}`}>
           <iframe
             className={styles.previewIframe}
-            srcDoc={htmlContent}
+            srcDoc={previewHtml || htmlContent}
             title="Email Preview"
             sandbox="allow-same-origin"
           />

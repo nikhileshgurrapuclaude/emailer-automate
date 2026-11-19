@@ -14,6 +14,7 @@ import StudioPreview from "@/sections/StudioPreview/StudioPreview";
 
 // SERVICES //
 import { mailerService } from "@/services/mailerService";
+import { storageService } from "@/services/storageService";
 
 // UTILS //
 import { generateEmailerHtml } from "@/utils/templateGenerator";
@@ -47,13 +48,25 @@ export default function StudioPage() {
     }, 4000);
   };
 
-  // Re-generate HTML when activeDeal or originUrl changes
+  // Re-generate production HTML (for Copy for Email & Export)
   const htmlContent = useMemo(() => {
     if (!activeDeal) return "";
     return generateEmailerHtml({
       ...activeDeal,
       originUrl,
     });
+  }, [activeDeal, originUrl]);
+
+  // Live preview HTML for Studio Preview pane (renders in-memory/base64 banner instantly without broken image)
+  const previewHtml = useMemo(() => {
+    if (!activeDeal) return "";
+    return generateEmailerHtml(
+      {
+        ...activeDeal,
+        originUrl,
+      },
+      { isLivePreview: true }
+    );
   }, [activeDeal, originUrl]);
 
   // Handle selecting a deal from sidebar
@@ -107,13 +120,56 @@ export default function StudioPage() {
     showToast("Emailer deleted.", "info");
   };
 
-  // Handle saving deal changes
-  const handleSaveDeal = () => {
+  // Handle saving deal changes (Update Tab)
+  const handleSaveDeal = async () => {
     if (!activeDeal) return;
+
+    // Upload banner to folder on server/storage if base64/preview is available
+    if (activeDeal.banner_base64 || activeDeal.banner_preview_url) {
+      try {
+        await storageService.uploadBannerToServer({
+          base64: activeDeal.banner_base64,
+          brand: activeDeal.brand_slug || activeDeal.brand || "avendus",
+          folderName: activeDeal.folder_name || activeDeal.folderName,
+          filename: activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg",
+        });
+      } catch (e) {
+        console.warn("Upload banner sync notice:", e);
+      }
+    }
+
     const saved = mailerService.saveMailer(activeDeal);
     setDeals(mailerService.getAllMailers());
     setActiveDeal(saved);
-    showToast(`Saved "${activeDeal.folder_name}" successfully!`, "success");
+    showToast(`Saved "${activeDeal.folder_name}" and synced assets!`, "success");
+  };
+
+  // Handle generating emailer & uploading banner to folder
+  const handleGenerate = async () => {
+    if (!activeDeal) return;
+
+    const brand = activeDeal.brand_slug || activeDeal.brand || "avendus";
+    const folder = activeDeal.folder_name || activeDeal.folderName || "deal_emailer";
+    const filename = activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg";
+
+    // Upload banner to folder when clicked Generate
+    if (activeDeal.banner_base64 || activeDeal.banner_preview_url) {
+      try {
+        await storageService.uploadBannerToServer({
+          base64: activeDeal.banner_base64,
+          brand,
+          folderName: folder,
+          filename,
+        });
+      } catch (e) {
+        console.warn("Upload banner notice on generate:", e);
+      }
+    }
+
+    const saved = mailerService.saveMailer(activeDeal);
+    setDeals(mailerService.getAllMailers());
+    setActiveDeal(saved);
+    showToast(`Banner uploaded to /${brand}/${folder}/img/${filename} and emailer generated!`, "success");
   };
 
   return (
@@ -144,12 +200,13 @@ export default function StudioPage() {
               deal={activeDeal}
               onChange={setActiveDeal}
               onSave={handleSaveDeal}
-              onGenerate={() => showToast("HTML preview updated!", "success")}
+              onGenerate={handleGenerate}
             />
 
             <StudioPreview
               deal={activeDeal}
               htmlContent={htmlContent}
+              previewHtml={previewHtml}
               onNotify={showToast}
             />
           </>

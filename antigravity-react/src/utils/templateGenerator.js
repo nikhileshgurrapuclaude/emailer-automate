@@ -71,6 +71,8 @@ export const TemplateGenerator = {
       previewText = '',
       bannerUrl = '',
       bannerFilename = 'bannerNew.jpg',
+      bannerPreviewUrl = '',
+      bannerBase64 = '',
       content = '',
       buttonLabel = 'Know More',
       buttonLink = 'https://www.avendus.com',
@@ -107,15 +109,24 @@ export const TemplateGenerator = {
 
     if (useOfflineRelative) {
       bannerSrc = `img/${cleanBannerFile}`;
+    } else if (isLivePreview && (bannerPreviewUrl || bannerBase64)) {
+      // In live preview inside the Studio, render the in-memory/base64 banner immediately so there is never a 404
+      bannerSrc = bannerPreviewUrl || bannerBase64;
     } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://')) && !bannerUrl.startsWith('blob:')) {
       bannerSrc = bannerUrl;
     } else if (bannerUrl && bannerUrl.startsWith('/') && !bannerUrl.startsWith('/blob:')) {
       bannerSrc = `${origin}${bannerUrl}`;
     } else if (bannerUrl && bannerUrl.trim().length > 0 && !bannerUrl.startsWith('data:') && !bannerUrl.startsWith('blob:')) {
       bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
+    } else if (bannerPreviewUrl || bannerBase64) {
+      bannerSrc = bannerPreviewUrl || bannerBase64;
     } else {
       bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${cleanBannerFile}`;
     }
+
+    const fallbackAttr = (isLivePreview && (bannerPreviewUrl || bannerBase64))
+      ? ` data-fallback="${bannerPreviewUrl || bannerBase64}" onerror="if(this.dataset.fallback && this.src!==this.dataset.fallback){this.src=this.dataset.fallback;}"`
+      : '';
 
     const sigImg = resolveImg('IBSignature.png');
     const aboutImg = resolveImg('abou_us.png');
@@ -229,7 +240,7 @@ export const TemplateGenerator = {
                                 <tbody>
                                   <tr>
                                     <td class="mcnImageContent" valign="top" style="mso-line-height-rule: exactly; padding: 0px; text-align: center;">
-                                      <img align="center" alt="${this.escapeHtml(title)}" src="${bannerSrc}" width="600" style="border: 0; height: auto; outline: none; text-decoration: none; max-width: 1000px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" />
+                                      <img align="center" alt="${this.escapeHtml(title)}" src="${bannerSrc}"${fallbackAttr} width="600" style="border: 0; height: auto; outline: none; text-decoration: none; max-width: 1000px; padding-bottom: 0; display: inline !important; vertical-align: bottom;" class="mcnImage" />
                                     </td>
                                   </tr>
                                 </tbody>
@@ -484,7 +495,9 @@ export function generateEmailerHtml(deal, options = {}) {
     title: deal.email_title || deal.title,
     previewText: deal.preview_text || deal.previewText,
     bannerUrl: deal.banner_url || deal.bannerUrl,
-    bannerFilename: deal.bannerFilename || 'bannerNew.jpg',
+    bannerFilename: deal.banner_filename || deal.bannerFilename || 'bannerNew.jpg',
+    bannerPreviewUrl: deal.banner_preview_url || deal.bannerPreviewUrl,
+    bannerBase64: deal.banner_base64 || deal.bannerBase64,
     content: deal.body_content || deal.content,
     buttonLabel: deal.cta_text || deal.buttonLabel,
     buttonLink: deal.cta_url || deal.buttonLink,
