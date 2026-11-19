@@ -24,11 +24,15 @@ import styles from "./Studio.module.scss";
 export default function StudioPage() {
   const [deals, setDeals] = useState([]);
   const [activeDeal, setActiveDeal] = useState(null);
-  const [originUrl, setOriginUrl] = useState("https://emailer-automate-antigravity-html.vercel.app");
+  const [originUrl, setOriginUrl] = useState("https://emailer-automate.vercel.app");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [toast, setToast] = useState(null);
 
-  // Initialize deals on client mount
+  // Initialize deals and detect origin on client mount
   useEffect(() => {
+    if (typeof window !== "undefined" && window.location.origin && !window.location.origin.startsWith("file:")) {
+      setOriginUrl(window.location.origin);
+    }
     const loadedDeals = mailerService.getAllMailers();
     setDeals(loadedDeals);
     if (loadedDeals.length > 0) {
@@ -65,13 +69,21 @@ export default function StudioPage() {
       id: `deal_${Date.now()}`,
       brand_id: "brand_avendus",
       brand_slug: "avendus",
+      brand: "avendus",
       folder_name: `new_avendus_${dateStr}`,
+      folderName: `new_avendus_${dateStr}`,
       email_title: "New Transaction Announcement",
+      title: "New Transaction Announcement",
       preview_text: "Discover the latest transaction insights",
-      banner_url: "/avendus/img/bannerNew.jpg",
+      previewText: "Discover the latest transaction insights",
+      banner_url: "/avendus/deal_KSH_Group/img/bannerNew.jpg",
+      bannerUrl: "/avendus/deal_KSH_Group/img/bannerNew.jpg",
       body_content: `**New Transaction Announcement**\n\nDear Reader,\n\nAvendus Capital is pleased to announce our latest strategic transaction advisory in India.\n\n**Avendus Capital acted as the exclusive financial advisor on this transaction.**\n\nOur team continues to lead transformative deals across high-growth sectors.\n\nBest regards,\nAvendus Capital Team`,
+      content: `**New Transaction Announcement**\n\nDear Reader,\n\nAvendus Capital is pleased to announce our latest strategic transaction advisory in India.\n\n**Avendus Capital acted as the exclusive financial advisor on this transaction.**\n\nOur team continues to lead transformative deals across high-growth sectors.\n\nBest regards,\nAvendus Capital Team`,
       cta_text: "Know More",
+      buttonLabel: "Know More",
       cta_url: "https://www.avendus.com",
+      buttonLink: "https://www.avendus.com",
       signoff_text: "Best regards,",
       signature_name: "Avendus Capital Team",
       created_at: new Date().toISOString(),
@@ -110,6 +122,9 @@ export default function StudioPage() {
         brandName="Avendus Capital"
         originUrl={originUrl}
         onOriginChange={setOriginUrl}
+        showSidebarToggle={true}
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
       <div className={styles.workspace}>
@@ -119,6 +134,8 @@ export default function StudioPage() {
           onSelectDeal={handleSelectDeal}
           onNewDeal={handleNewDeal}
           onDeleteDeal={handleDeleteDeal}
+          isCollapsed={!isSidebarOpen}
+          onToggleCollapse={() => setIsSidebarOpen((prev) => !prev)}
         />
 
         {activeDeal && (

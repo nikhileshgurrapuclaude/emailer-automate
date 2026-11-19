@@ -7,13 +7,18 @@
   flex-direction: column;
   height: calc(100vh - 54px);
   overflow: hidden;
-  transition: width 0.3s ease;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              min-width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease;
+  position: relative;
+  z-index: 20;
 
   &.collapsed {
-    width: 0;
-    min-width: 0;
+    width: 0 !important;
+    min-width: 0 !important;
     border-right: none;
-    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
@@ -34,6 +39,12 @@
   color: #ffffff;
 }
 
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .newBtn {
   display: inline-flex;
   align-items: center;
@@ -52,6 +63,26 @@
   &:hover {
     background: #FFDF5A;
     transform: scale(1.03);
+  }
+}
+
+.collapseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #12141a;
+  border: 1px solid #232732;
+  border-radius: 6px;
+  color: #9ea4b3;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1c202a;
+    border-color: #FED430;
+    color: #FED430;
   }
 }
 
@@ -205,4 +236,33 @@
   text-align: center;
   color: #646b7a;
   font-size: 0.85rem;
+}
+
+.floatingExpandBtn {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.75rem 0.6rem 0.5rem;
+  background: #12141a;
+  border: 1px solid #282c37;
+  border-left: none;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  color: #FED430;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1c202a;
+    padding-left: 0.75rem;
+    box-shadow: 4px 0 20px rgba(254, 212, 48, 0.3);
+  }
 }

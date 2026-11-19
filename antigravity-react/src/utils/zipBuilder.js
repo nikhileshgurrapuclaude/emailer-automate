@@ -24,7 +24,11 @@ const AVENDUS_FOOTER_IMAGES = [
  */
 async function fetchImageBuffer(url) {
   try {
-    const res = await fetch(url);
+    let fetchUrl = url;
+    if (fetchUrl.startsWith("/") && typeof window !== "undefined") {
+      fetchUrl = `${window.location.origin}${fetchUrl}`;
+    }
+    const res = await fetch(fetchUrl);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.arrayBuffer();
   } catch (err) {
@@ -44,7 +48,7 @@ async function fetchImageBuffer(url) {
  */
 export async function downloadEmailerZip({ deal, htmlContent }) {
   const zip = new JSZip();
-  const folderName = deal.folder_name || "emailer";
+  const folderName = deal.folder_name || deal.folderName || "emailer";
 
   // 1. Add index.html at root of ZIP
   zip.file("index.html", htmlContent);
@@ -53,15 +57,15 @@ export async function downloadEmailerZip({ deal, htmlContent }) {
   const imgFolder = zip.folder("img");
 
   // 3. Fetch & add banner image
-  if (deal.banner_url) {
-    const bannerBuffer = await fetchImageBuffer(deal.banner_url);
+  const bannerUrl = deal.banner_url || deal.bannerUrl;
+  if (bannerUrl) {
+    const bannerBuffer = await fetchImageBuffer(bannerUrl);
     if (bannerBuffer) {
-      // Determine file extension
       let ext = "jpg";
-      if (deal.banner_url.endsWith(".png")) ext = "png";
-      else if (deal.banner_url.endsWith(".webp")) ext = "webp";
+      if (bannerUrl.includes(".png")) ext = "png";
+      else if (bannerUrl.includes(".webp")) ext = "webp";
       imgFolder.file(`banner.${ext}`, bannerBuffer);
-      // Also provide bannerNew.jpg for backwards compatibility with legacy templates
+      // Backwards compatibility with legacy templates
       imgFolder.file("bannerNew.jpg", bannerBuffer);
     }
   }

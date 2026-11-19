@@ -21,7 +21,15 @@ export default function StudioEditor({
 
   const updateField = (field, value) => {
     if (onChange) {
-      onChange({ ...deal, [field]: value });
+      const updated = { ...deal, [field]: value };
+      if (field === "folder_name") updated.folderName = value;
+      if (field === "email_title") updated.title = value;
+      if (field === "preview_text") updated.previewText = value;
+      if (field === "banner_url") updated.bannerUrl = value;
+      if (field === "body_content") updated.content = value;
+      if (field === "cta_text") updated.buttonLabel = value;
+      if (field === "cta_url") updated.buttonLink = value;
+      onChange(updated);
     }
   };
 
@@ -61,8 +69,8 @@ export default function StudioEditor({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const brandSlug = deal.brand_slug || "avendus";
-    const folderName = deal.folder_name || "new_emailer";
+    const brandSlug = deal.brand_slug || deal.brand || "avendus";
+    const folderName = deal.folder_name || deal.folderName || "new_emailer";
 
     const uploadResult = await storageService.uploadImage({
       file,
@@ -76,11 +84,24 @@ export default function StudioEditor({
     }
   };
 
+  const folderName = deal.folder_name || deal.folderName || "";
+  const emailTitle = deal.email_title || deal.title || "";
+  const previewText = deal.preview_text || deal.previewText || "";
+  const bannerUrl = deal.banner_url || deal.bannerUrl || "";
+  const bodyContent = deal.body_content || deal.content || "";
+  const ctaText = deal.cta_text || deal.buttonLabel || "";
+  const ctaUrl = deal.cta_url || deal.buttonLink || "";
+  const signoffText = deal.signoff_text || "Best regards,";
+  const signatureName = deal.signature_name || "Avendus Capital Team";
+
   return (
     <div className={styles.editorPanel}>
       <div className={styles.topBar}>
         <div className={styles.headerText}>
-          <div className={styles.title}>✏️ Emailer Editor</div>
+          <div className={styles.title}>
+            <span>✏️</span>
+            <span>Emailer Editor</span>
+          </div>
           <div className={styles.subtitle}>Strict single &lt;p&gt; compliant structure</div>
         </div>
         <div className={styles.actionButtons}>
@@ -103,13 +124,13 @@ export default function StudioEditor({
               1. Folder Name <span className={styles.required}>*</span>
             </label>
             <span className={styles.sublabel}>
-              Asset URL: /[{deal.brand_slug || "avendus"}]/[{deal.folder_name || "folder_name"}]/img/
+              Asset URL: /[{deal.brand_slug || deal.brand || "avendus"}]/[{folderName || "folder_name"}]/img/
             </span>
           </div>
           <input
             type="text"
             className={styles.input}
-            value={deal.folder_name || ""}
+            value={folderName}
             onChange={(e) => updateField("folder_name", e.target.value)}
             placeholder="e.g. deal_KSH_Group"
           />
@@ -123,7 +144,7 @@ export default function StudioEditor({
           <input
             type="text"
             className={styles.input}
-            value={deal.email_title || ""}
+            value={emailTitle}
             onChange={(e) => updateField("email_title", e.target.value)}
             placeholder="e.g. KSH Group sells 100% stake in KSH INFRA to IndoSpace"
           />
@@ -135,7 +156,7 @@ export default function StudioEditor({
           <input
             type="text"
             className={styles.input}
-            value={deal.preview_text || ""}
+            value={previewText}
             onChange={(e) => updateField("preview_text", e.target.value)}
             placeholder="e.g. Avendus acts as exclusive financial advisor..."
           />
@@ -163,16 +184,16 @@ export default function StudioEditor({
             <input
               type="text"
               className={styles.input}
-              value={deal.banner_url || ""}
+              value={bannerUrl}
               onChange={(e) => updateField("banner_url", e.target.value)}
-              placeholder="or enter image URL (e.g. /avendus/img/bannerNew.jpg)"
+              placeholder="or enter image URL (e.g. /avendus/deal_KSH_Group/img/bannerNew.jpg)"
             />
           </div>
 
-          {deal.banner_url && (
+          {bannerUrl && (
             <div className={styles.bannerPreviewWrapper}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={deal.banner_url} alt="Banner Preview" />
+              <img src={bannerUrl} alt="Banner Preview" />
             </div>
           )}
         </div>
@@ -211,7 +232,7 @@ export default function StudioEditor({
           <textarea
             ref={textareaRef}
             className={styles.textarea}
-            value={deal.body_content || ""}
+            value={bodyContent}
             onChange={(e) => updateField("body_content", e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter email content here..."
@@ -225,7 +246,7 @@ export default function StudioEditor({
             <input
               type="text"
               className={styles.input}
-              value={deal.cta_text || ""}
+              value={ctaText}
               onChange={(e) => updateField("cta_text", e.target.value)}
               placeholder="e.g. Know More"
             />
@@ -235,7 +256,7 @@ export default function StudioEditor({
             <input
               type="text"
               className={styles.input}
-              value={deal.cta_url || ""}
+              value={ctaUrl}
               onChange={(e) => updateField("cta_url", e.target.value)}
               placeholder="https://..."
             />
@@ -249,7 +270,7 @@ export default function StudioEditor({
             <input
               type="text"
               className={styles.input}
-              value={deal.signoff_text || ""}
+              value={signoffText}
               onChange={(e) => updateField("signoff_text", e.target.value)}
               placeholder="Best regards,"
             />
@@ -259,7 +280,7 @@ export default function StudioEditor({
             <input
               type="text"
               className={styles.input}
-              value={deal.signature_name || ""}
+              value={signatureName}
               onChange={(e) => updateField("signature_name", e.target.value)}
               placeholder="Avendus Capital Team"
             />

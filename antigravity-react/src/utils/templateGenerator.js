@@ -48,7 +48,7 @@ export const TemplateGenerator = {
 
   // Resolve base image URL
   getImageUrl(brand, folderName, filename, customDomain = '') {
-    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate-antigravity-html.vercel.app';
+    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate.vercel.app';
     const origin = (customDomain && customDomain.trim()) 
       ? customDomain.trim().replace(/\/+$/, '') 
       : (typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:') 
@@ -87,6 +87,13 @@ export const TemplateGenerator = {
     const isLivePreview = options.isLivePreview === true;
     const useOfflineRelative = options.useOfflineRelativePaths === true;
 
+    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate.vercel.app';
+    const origin = (customDomain && customDomain.trim()) 
+      ? customDomain.trim().replace(/\/+$/, '') 
+      : (typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:') 
+          ? window.location.origin 
+          : defaultOrigin);
+
     // List of known pre-deployed deals
     const KNOWN_SERVER_DEALS = [
       'deal_KSH_Group',
@@ -101,24 +108,23 @@ export const TemplateGenerator = {
         return `img/${filename}`;
       }
       const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-      if (isLivePreview) {
-        return `${cleanBrand}/${serverFolder}/img/${filename}`;
-      }
-      // Public HTTPS URL for live emails and downloaded ZIP index.html
-      return this.getImageUrl(brand, serverFolder, filename, customDomain);
+      return `${origin}/${cleanBrand}/${serverFolder}/img/${filename}`;
     };
 
     // Banner image resolution
     let bannerSrc;
     if (useOfflineRelative) {
       bannerSrc = `img/${bannerFilename}`;
-    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:'))) {
+    } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://') || bannerUrl.startsWith('data:') || bannerUrl.startsWith('blob:'))) {
       bannerSrc = bannerUrl;
-    } else if (bannerUrl && bannerUrl.startsWith('blob:') && isLivePreview) {
-      bannerSrc = bannerUrl;
+    } else if (bannerUrl && bannerUrl.startsWith('/')) {
+      bannerSrc = `${origin}${bannerUrl}`;
+    } else if (bannerUrl && bannerUrl.trim().length > 0) {
+      const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
+      bannerSrc = `${origin}/${cleanBrand}/${serverFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
     } else {
       const serverFolder = KNOWN_SERVER_DEALS.includes(cleanFolder) ? cleanFolder : 'deal_KSH_Group';
-      bannerSrc = this.getImageUrl(brand, serverFolder, bannerFilename, customDomain);
+      bannerSrc = `${origin}/${cleanBrand}/${serverFolder}/img/${bannerFilename}`;
     }
 
     const sigImg = resolveImg('IBSignature.png');
@@ -449,14 +455,15 @@ export const TemplateGenerator = {
 export function generateEmailerHtml(deal, options = {}) {
   if (!deal) return '';
   return TemplateGenerator.generateAvendus({
-    folderName: deal.folder_name,
-    brand: deal.brand_slug,
-    title: deal.email_title,
-    previewText: deal.preview_text,
-    bannerUrl: deal.banner_url,
-    content: deal.body_content,
-    buttonLabel: deal.cta_text,
-    buttonLink: deal.cta_url,
+    folderName: deal.folder_name || deal.folderName,
+    brand: deal.brand_slug || deal.brand,
+    title: deal.email_title || deal.title,
+    previewText: deal.preview_text || deal.previewText,
+    bannerUrl: deal.banner_url || deal.bannerUrl,
+    bannerFilename: deal.bannerFilename || 'bannerNew.jpg',
+    content: deal.body_content || deal.content,
+    buttonLabel: deal.cta_text || deal.buttonLabel,
+    buttonLink: deal.cta_url || deal.buttonLink,
     signoffText: deal.signoff_text,
     signatureName: deal.signature_name,
     customDomain: deal.originUrl,
