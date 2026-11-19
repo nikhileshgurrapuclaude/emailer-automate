@@ -31,8 +31,9 @@ export const StorageService = {
     const cleanBrand = (brand || 'avendus').toLowerCase();
     const cleanFolder = (folderName || 'deal_emailer').trim();
 
-    // The canonical server path - matching all other image links
-    const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
+    const defaultOrigin = 'https://emailer-automate.vercel.app';
+    // The canonical Vercel server path - matching all other image links
+    const serverPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
     // Upload directly to server route /api/upload
     try {
@@ -70,10 +71,11 @@ export const StorageService = {
    * Upload banner to server via base64 or file (e.g. when clicked Generate or Update Tab)
    */
   async uploadBannerToServer({ file, base64, brand = 'avendus', folderName = 'deal_emailer', filename = 'banner.jpg' }) {
+    const defaultOrigin = 'https://emailer-automate.vercel.app';
     const cleanBrand = (brand || 'avendus').toLowerCase();
     const cleanFolder = (folderName || 'deal_emailer').trim();
     const cleanFilename = (filename || 'banner.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
-    const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
+    const serverPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
     try {
       const formData = new FormData();

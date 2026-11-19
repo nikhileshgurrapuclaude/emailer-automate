@@ -6,14 +6,20 @@
 
 import { SEED_DEALS } from "@/data/seedDeals";
 
-const STORAGE_KEY = "emailer_studio_deals_v8";
+const STORAGE_KEY = "emailer_studio_deals_v9";
 
 function normalizeDeal(deal) {
   if (!deal) return null;
   const folder = deal.folder_name || deal.folderName || "new_deal";
   const title = deal.email_title || deal.title || "Transaction Announcement";
   const preview = deal.preview_text || deal.previewText || "";
-  const banner = deal.banner_url || deal.bannerUrl || "/avendus/deal_KSH_Group/img/bannerNew.jpg";
+  let banner = deal.banner_url || deal.bannerUrl || "https://emailer-automate.vercel.app/avendus/deal_KSH_Group/img/bannerNew.jpg";
+  if (banner.startsWith("/")) {
+    banner = `https://emailer-automate.vercel.app${banner}`;
+  } else if (banner.includes("localhost") || banner.includes("127.0.0.1")) {
+    const rel = banner.replace(/^https?:\/\/[^/]+/, "");
+    banner = `https://emailer-automate.vercel.app${rel}`;
+  }
   const body = deal.body_content || deal.content || "";
   const ctaText = deal.cta_text || deal.buttonLabel || "Know More";
   const ctaUrl = deal.cta_url || deal.buttonLink || "https://www.avendus.com";

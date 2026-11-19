@@ -29,10 +29,18 @@ export default function StudioPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [toast, setToast] = useState(null);
 
-  // Initialize deals and detect origin on client mount
+  // Initialize deals and keep canonical Vercel origin
   useEffect(() => {
-    if (typeof window !== "undefined" && window.location.origin && !window.location.origin.startsWith("file:")) {
+    if (
+      typeof window !== "undefined" &&
+      window.location.origin &&
+      !window.location.origin.startsWith("file:") &&
+      !window.location.origin.includes("localhost") &&
+      !window.location.origin.includes("127.0.0.1")
+    ) {
       setOriginUrl(window.location.origin);
+    } else {
+      setOriginUrl("https://emailer-automate.vercel.app");
     }
     const loadedDeals = mailerService.getAllMailers();
     setDeals(loadedDeals);
@@ -89,8 +97,8 @@ export default function StudioPage() {
       title: "New Transaction Announcement",
       preview_text: "Discover the latest transaction insights",
       previewText: "Discover the latest transaction insights",
-      banner_url: "/avendus/deal_KSH_Group/img/bannerNew.jpg",
-      bannerUrl: "/avendus/deal_KSH_Group/img/bannerNew.jpg",
+      banner_url: "https://emailer-automate.vercel.app/avendus/deal_KSH_Group/img/bannerNew.jpg",
+      bannerUrl: "https://emailer-automate.vercel.app/avendus/deal_KSH_Group/img/bannerNew.jpg",
       body_content: `**New Transaction Announcement**\n\nDear Reader,\n\nAvendus Capital is pleased to announce our latest strategic transaction advisory in India.\n\n**Avendus Capital acted as the exclusive financial advisor on this transaction.**\n\nOur team continues to lead transformative deals across high-growth sectors.\n\nBest regards,\nAvendus Capital Team`,
       content: `**New Transaction Announcement**\n\nDear Reader,\n\nAvendus Capital is pleased to announce our latest strategic transaction advisory in India.\n\n**Avendus Capital acted as the exclusive financial advisor on this transaction.**\n\nOur team continues to lead transformative deals across high-growth sectors.\n\nBest regards,\nAvendus Capital Team`,
       cta_text: "Know More",

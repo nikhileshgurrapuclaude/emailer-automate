@@ -46,14 +46,16 @@ export const TemplateGenerator = {
     </p>`;
   },
 
-  // Resolve base image URL
+  // Resolve base image URL - strictly canonical Vercel HTTPS link
   getImageUrl(brand, folderName, filename, customDomain = '') {
-    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate.vercel.app';
-    const origin = (customDomain && customDomain.trim()) 
-      ? customDomain.trim().replace(/\/+$/, '') 
-      : (typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:') 
-          ? window.location.origin 
-          : defaultOrigin);
+    const CANONICAL_ORIGIN = 'https://emailer-automate.vercel.app';
+    let origin = CANONICAL_ORIGIN;
+    if (customDomain && customDomain.trim()) {
+      const cleanCustom = customDomain.trim().replace(/\/+$/, '');
+      if (!cleanCustom.includes('localhost') && !cleanCustom.includes('127.0.0.1') && !cleanCustom.startsWith('file:')) {
+        origin = cleanCustom;
+      }
+    }
 
     const cleanBrand = (brand || 'avendus').toLowerCase();
     const cleanFolder = (folderName || 'deal_KSH_Group').trim();
@@ -87,39 +89,40 @@ export const TemplateGenerator = {
     const cleanFolder = (folderName || 'deal_KSH_Group').trim();
 
     const isLivePreview = options.isLivePreview === true;
-    const useOfflineRelative = options.useOfflineRelativePaths === true;
+    const CANONICAL_ORIGIN = 'https://emailer-automate.vercel.app';
 
-    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || 'https://emailer-automate.vercel.app';
-    const origin = (customDomain && customDomain.trim()) 
-      ? customDomain.trim().replace(/\/+$/, '') 
-      : (typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:') 
-          ? window.location.origin 
-          : defaultOrigin);
-
-    const resolveImg = (filename) => {
-      if (useOfflineRelative) {
-        return `img/${filename}`;
+    // Strictly enforce canonical Vercel HTTPS origin - never allow localhost or relative local paths
+    let origin = CANONICAL_ORIGIN;
+    if (customDomain && customDomain.trim()) {
+      const cleanCustom = customDomain.trim().replace(/\/+$/, '');
+      if (!cleanCustom.includes('localhost') && !cleanCustom.includes('127.0.0.1') && !cleanCustom.startsWith('file:')) {
+        origin = cleanCustom;
       }
+    }
+
+    // Always resolve images to canonical Vercel HTTPS links
+    const resolveImg = (filename) => {
       return `${origin}/${cleanBrand}/${cleanFolder}/img/${filename}`;
     };
 
-    // Banner image resolution
+    // Banner image resolution - always proper Vercel HTTPS link in production/HTML/ZIP
     let bannerSrc;
     const cleanBannerFile = (bannerFilename || 'bannerNew.jpg').replace(/^\/+/, '');
 
-    if (useOfflineRelative) {
-      bannerSrc = `img/${cleanBannerFile}`;
-    } else if (isLivePreview && (bannerPreviewUrl || bannerBase64)) {
-      // In live preview inside the Studio, render the in-memory/base64 banner immediately so there is never a 404
+    if (isLivePreview && (bannerPreviewUrl || bannerBase64)) {
+      // Live preview iframe uses in-memory thumbnail to show instant upload preview
       bannerSrc = bannerPreviewUrl || bannerBase64;
+    } else if (bannerUrl && bannerUrl.startsWith('/') && !bannerUrl.startsWith('/blob:')) {
+      // Local path relative to root converted to full Vercel link
+      bannerSrc = `${origin}${bannerUrl}`;
+    } else if (bannerUrl && (bannerUrl.includes('localhost') || bannerUrl.includes('127.0.0.1'))) {
+      // Old localhost link converted to full Vercel link
+      const relPath = bannerUrl.replace(/^https?:\/\/[^/]+/, '');
+      bannerSrc = `${origin}${relPath}`;
     } else if (bannerUrl && (bannerUrl.startsWith('http://') || bannerUrl.startsWith('https://')) && !bannerUrl.startsWith('blob:')) {
       bannerSrc = bannerUrl;
-    } else if (bannerUrl && bannerUrl.startsWith('/') && !bannerUrl.startsWith('/blob:')) {
-      bannerSrc = `${origin}${bannerUrl}`;
     } else if (bannerUrl && bannerUrl.trim().length > 0 && !bannerUrl.startsWith('data:') && !bannerUrl.startsWith('blob:')) {
       bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${bannerUrl.replace(/^\/+/, '')}`;
-    } else if (bannerPreviewUrl || bannerBase64) {
-      bannerSrc = bannerPreviewUrl || bannerBase64;
     } else {
       bannerSrc = `${origin}/${cleanBrand}/${cleanFolder}/img/${cleanBannerFile}`;
     }

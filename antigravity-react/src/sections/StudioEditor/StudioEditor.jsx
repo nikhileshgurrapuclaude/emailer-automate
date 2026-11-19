@@ -27,9 +27,9 @@ export default function StudioEditor({
         const brandSlug = deal.brand_slug || deal.brand || "avendus";
         const oldFolder = deal.folder_name || deal.folderName;
         // If banner was pointing to old folder, automatically update it to match new folder
-        if (oldFolder && deal.banner_url && deal.banner_url.startsWith(`/${brandSlug}/${oldFolder}/img/`)) {
+        if (oldFolder && deal.banner_url && deal.banner_url.includes(`/${oldFolder}/img/`)) {
           const filename = deal.banner_url.split("/").pop();
-          const newPath = `/${brandSlug}/${value}/img/${filename}`;
+          const newPath = `https://emailer-automate.vercel.app/${brandSlug}/${value}/img/${filename}`;
           updated.banner_url = newPath;
           updated.bannerUrl = newPath;
         }
@@ -156,7 +156,7 @@ export default function StudioEditor({
               1. Folder Name <span className={styles.required}>*</span>
             </label>
             <span className={styles.sublabel}>
-              Asset URL: /[{deal.brand_slug || deal.brand || "avendus"}]/[{folderName || "folder_name"}]/img/
+              Asset URL: https://emailer-automate.vercel.app/{deal.brand_slug || deal.brand || "avendus"}/{folderName || "folder_name"}/img/
             </span>
           </div>
           <input
@@ -218,7 +218,7 @@ export default function StudioEditor({
               className={styles.input}
               value={bannerUrl}
               onChange={(e) => updateField("banner_url", e.target.value)}
-              placeholder="e.g. /avendus/deal_ArkaFincap/img/bannerNew.jpg"
+              placeholder="e.g. https://emailer-automate.vercel.app/avendus/deal_ArkaFincap/img/bannerNew.jpg"
             />
           </div>
 

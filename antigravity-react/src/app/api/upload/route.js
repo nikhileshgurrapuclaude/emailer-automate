@@ -49,7 +49,8 @@ export async function POST(request) {
     const cleanBrand = brand.replace(/[^a-zA-Z0-9_-]/g, "") || "avendus";
     const cleanFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "") || "deal_emailer";
     const cleanFilename = filename.replace(/[^a-zA-Z0-9._-]/g, "_") || "banner.jpg";
-    const serverPath = `/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
+    const defaultOrigin = "https://emailer-automate.vercel.app";
+    const serverPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
     let savedToDisk = false;
     let savedToCloud = false;
@@ -68,6 +69,18 @@ export async function POST(request) {
         // Also save as bannerNew.jpg for compatibility
         const compatFilePath = path.join(targetDir, "bannerNew.jpg");
         fs.writeFileSync(compatFilePath, buffer);
+
+        // Sync standard footer assets to the new deal folder if not already present
+        const brandMasterImgDir = path.join(process.cwd(), "public", cleanBrand, "img");
+        if (fs.existsSync(brandMasterImgDir)) {
+          const masterFiles = fs.readdirSync(brandMasterImgDir);
+          for (const f of masterFiles) {
+            const destPath = path.join(targetDir, f);
+            if (!fs.existsSync(destPath) && f !== "bannerNew.jpg") {
+              fs.copyFileSync(path.join(brandMasterImgDir, f), destPath);
+            }
+          }
+        }
 
         savedToDisk = true;
       } catch (fsErr) {

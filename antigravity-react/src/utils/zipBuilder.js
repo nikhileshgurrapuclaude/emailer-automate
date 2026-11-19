@@ -51,9 +51,8 @@ export async function downloadEmailerZip({ deal, htmlContent }) {
   const zip = new JSZip();
   const folderName = deal.folder_name || deal.folderName || "emailer";
 
-  // 1. Add index.html at root of ZIP with offline relative paths (img/...)
-  const offlineHtml = generateEmailerHtml(deal, { useOfflineRelativePaths: true });
-  zip.file("index.html", offlineHtml || htmlContent);
+  // 1. Add index.html at root of ZIP with canonical Vercel server links
+  zip.file("index.html", htmlContent);
 
   // 2. Create img folder
   const imgFolder = zip.folder("img");
