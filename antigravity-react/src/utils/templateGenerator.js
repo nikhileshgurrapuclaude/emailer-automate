@@ -211,7 +211,7 @@ export const TemplateGenerator = {
     }
   </style>
 </head>
-<body style="height: 100%; margin: 0; padding: 0; width: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; background-color: #ffffff;">
+<body style="height: 100%; margin: 0; padding: 0; width: 600; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; background-color: #ffffff;">
   <!-- INBOX PREVIEW SNIPPET -->
   <span class="mcnPreviewText" style="display: none; font-size: 0px; line-height: 0px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; visibility: hidden; mso-hide: all;">
     ${this.escapeHtml(snippet)}
