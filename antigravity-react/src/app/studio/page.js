@@ -117,15 +117,33 @@ export default function StudioPage() {
     showToast(`Created new emailer "${newDeal.folder_name}"!`, "success");
   };
 
-  // Handle deleting a deal
-  const handleDeleteDeal = (id) => {
+  // Handle deleting a deal, its folder, and all its assets
+  const handleDeleteDeal = async (id, dealToDelete) => {
+    const targetDeal = dealToDelete || deals.find((d) => d.id === id);
+    const folder = targetDeal?.folder_name || targetDeal?.folderName;
+    const brand = targetDeal?.brand_slug || targetDeal?.brand || "avendus";
+
+    // 1. Delete folder and assets from Cloudinary and disk
+    if (folder) {
+      try {
+        await fetch("/api/delete-deal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ brand, folder, id }),
+        });
+      } catch (err) {
+        console.warn("Delete deal assets error:", err);
+      }
+    }
+
+    // 2. Delete from mailerService
     mailerService.deleteMailer(id);
     const updated = mailerService.getAllMailers();
     setDeals(updated);
     if (activeDeal?.id === id) {
       setActiveDeal(updated[0] || null);
     }
-    showToast("Emailer deleted.", "info");
+    showToast(`Deleted "${folder || "emailer"}" and all associated assets.`, "info");
   };
 
   // Handle saving deal changes (Update Tab)

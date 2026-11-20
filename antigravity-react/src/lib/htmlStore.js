@@ -14,3 +14,9 @@ export function getEmailerHtml(brand, folder) {
   const key = `${brand.toLowerCase().trim()}_${folder.trim()}`;
   return globalThis.__emailerHtmlStore.get(key) || null;
 }
+
+export function deleteEmailerHtml(brand, folder) {
+  if (!brand || !folder) return;
+  const key = `${brand.toLowerCase().trim()}_${folder.trim()}`;
+  globalThis.__emailerHtmlStore.delete(key);
+}

@@ -119,7 +119,7 @@ export default function DealsSidebar({
                     onClick={(e) => {
                       e.stopPropagation();
                       if (confirm(`Delete "${folderName}"?`)) {
-                        onDeleteDeal(deal.id);
+                        onDeleteDeal(deal.id, deal);
                       }
                     }}
                     title="Delete emailer"
