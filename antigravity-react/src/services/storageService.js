@@ -35,6 +35,8 @@ export const StorageService = {
     // The canonical Vercel server path - matching all other image links
     const serverPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
+    let finalServerPath = serverPath;
+
     // Upload directly to server route /api/upload
     try {
       const formData = new FormData();
@@ -43,17 +45,21 @@ export const StorageService = {
       formData.append('folder', cleanFolder);
       formData.append('filename', cleanFilename);
 
-      await fetch('/api/upload', {
+      const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
+      const data = await res.json();
+      if (data?.serverPath) {
+        finalServerPath = data.serverPath;
+      }
     } catch (uploadErr) {
       console.warn('Server upload notice:', uploadErr);
     }
 
     return {
-      url: serverPath,
-      serverPath: serverPath,
+      url: finalServerPath,
+      serverPath: finalServerPath,
       previewUrl: objectUrl,
       filename: cleanFilename,
       base64: base64,

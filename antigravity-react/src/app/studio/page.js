@@ -132,52 +132,118 @@ export default function StudioPage() {
   const handleSaveDeal = async () => {
     if (!activeDeal) return;
 
+    const brand = (activeDeal.brand_slug || activeDeal.brand || "avendus").toLowerCase().trim();
+    const folder = (activeDeal.folder_name || activeDeal.folderName || "deal_emailer").trim();
+    const filename = (activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg").trim();
+
+    let updatedDeal = { ...activeDeal };
+
     // Upload banner to folder on server/storage if base64/preview is available
     if (activeDeal.banner_base64 || activeDeal.banner_preview_url) {
       try {
-        await storageService.uploadBannerToServer({
-          base64: activeDeal.banner_base64,
-          brand: activeDeal.brand_slug || activeDeal.brand || "avendus",
-          folderName: activeDeal.folder_name || activeDeal.folderName,
-          filename: activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg",
-        });
-      } catch (e) {
-        console.warn("Upload banner sync notice:", e);
-      }
-    }
-
-    const saved = mailerService.saveMailer(activeDeal);
-    setDeals(mailerService.getAllMailers());
-    setActiveDeal(saved);
-    showToast(`Saved "${activeDeal.folder_name}" and synced assets!`, "success");
-  };
-
-  // Handle generating emailer & uploading banner to folder
-  const handleGenerate = async () => {
-    if (!activeDeal) return;
-
-    const brand = activeDeal.brand_slug || activeDeal.brand || "avendus";
-    const folder = activeDeal.folder_name || activeDeal.folderName || "deal_emailer";
-    const filename = activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg";
-
-    // Upload banner to folder when clicked Generate
-    if (activeDeal.banner_base64 || activeDeal.banner_preview_url) {
-      try {
-        await storageService.uploadBannerToServer({
+        const upRes = await storageService.uploadBannerToServer({
           base64: activeDeal.banner_base64,
           brand,
           folderName: folder,
           filename,
         });
+        if (upRes?.serverPath) {
+          updatedDeal.banner_url = upRes.serverPath;
+          updatedDeal.bannerUrl = upRes.serverPath;
+        }
+      } catch (e) {
+        console.warn("Upload banner sync notice:", e);
+      }
+    }
+
+    const generatedHtml = generateEmailerHtml({
+      ...updatedDeal,
+      originUrl,
+    });
+
+    try {
+      await fetch("/api/save-html", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand,
+          folder,
+          htmlContent: generatedHtml,
+          deal: updatedDeal,
+        }),
+      });
+    } catch (sErr) {
+      console.warn("Save HTML notice:", sErr);
+    }
+
+    const saved = mailerService.saveMailer(updatedDeal);
+    setDeals(mailerService.getAllMailers());
+    setActiveDeal(saved);
+    showToast(`Saved "${updatedDeal.folder_name}" and synced assets!`, "success");
+  };
+
+  // Handle generating emailer, uploading banner & opening shareable link in new tab
+  const handleGenerate = async () => {
+    if (!activeDeal) return;
+
+    const brand = (activeDeal.brand_slug || activeDeal.brand || "avendus").toLowerCase().trim();
+    const folder = (activeDeal.folder_name || activeDeal.folderName || "deal_emailer").trim();
+    const filename = (activeDeal.banner_filename || activeDeal.bannerFilename || "bannerNew.jpg").trim();
+
+    let updatedDeal = { ...activeDeal };
+
+    // 1. Upload banner to Cloudinary / server folder when clicking Generate
+    if (activeDeal.banner_base64 || activeDeal.banner_preview_url) {
+      try {
+        const upRes = await storageService.uploadBannerToServer({
+          base64: activeDeal.banner_base64,
+          brand,
+          folderName: folder,
+          filename,
+        });
+        if (upRes?.serverPath) {
+          updatedDeal.banner_url = upRes.serverPath;
+          updatedDeal.bannerUrl = upRes.serverPath;
+        }
       } catch (e) {
         console.warn("Upload banner notice on generate:", e);
       }
     }
 
-    const saved = mailerService.saveMailer(activeDeal);
+    // 2. Generate canonical production HTML
+    const generatedHtml = generateEmailerHtml({
+      ...updatedDeal,
+      originUrl,
+    });
+
+    // 3. Save HTML to server so the shareable link serves it
+    try {
+      await fetch("/api/save-html", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          brand,
+          folder,
+          htmlContent: generatedHtml,
+          deal: updatedDeal,
+        }),
+      });
+    } catch (sErr) {
+      console.warn("Save HTML notice:", sErr);
+    }
+
+    // 4. Save deal state
+    const saved = mailerService.saveMailer(updatedDeal);
     setDeals(mailerService.getAllMailers());
     setActiveDeal(saved);
-    showToast(`Banner uploaded to /${brand}/${folder}/img/${filename} and emailer generated!`, "success");
+
+    // 5. Open exact folder index.html link in new tab
+    const shareUrl = `${originUrl}/${brand}/${folder}/index.html`;
+    if (typeof window !== "undefined") {
+      window.open(shareUrl, "_blank");
+    }
+
+    showToast(`Generated! Opened shareable link in new tab: ${shareUrl}`, "success");
   };
 
   return (

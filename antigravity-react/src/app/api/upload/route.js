@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
+import { uploadImageToCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
 
 export const dynamic = "force-dynamic";
 
 /**
  * API Route: /api/upload
  * Handles uploading banner and image assets to deal-specific folder.
- * In local environment: saves to public/[brand]/[folder]/img/[filename].
- * If Supabase is configured: uploads to Supabase Storage bucket 'mailers'.
+ * Uses Cloudinary for permanent free cloud storage when configured,
+ * and saves to local disk when running in development.
  */
 export async function POST(request) {
   try {
@@ -49,14 +50,31 @@ export async function POST(request) {
     const cleanBrand = brand.replace(/[^a-zA-Z0-9_-]/g, "") || "avendus";
     const cleanFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "") || "deal_emailer";
     const cleanFilename = filename.replace(/[^a-zA-Z0-9._-]/g, "_") || "banner.jpg";
-    const defaultOrigin = "https://emailer-automate.vercel.app";
-    const serverPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
+    const defaultOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN || "https://emailer-automate.vercel.app";
+    const localServerPath = `${defaultOrigin}/${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
 
     let savedToDisk = false;
-    let savedToCloud = false;
+    let savedToCloudinary = false;
     let cloudUrl = null;
 
-    // 1. Try local disk save if buffer exists
+    // 1. Upload to Cloudinary if buffer exists and Cloudinary is configured
+    if (buffer && isCloudinaryConfigured()) {
+      try {
+        const cloudResult = await uploadImageToCloudinary(buffer, {
+          folder: `${cleanBrand}/${cleanFolder}/img`,
+          filename: cleanFilename,
+        });
+
+        if (cloudResult.success && cloudResult.url) {
+          savedToCloudinary = true;
+          cloudUrl = cloudResult.url;
+        }
+      } catch (cErr) {
+        console.warn("Cloudinary upload failed:", cErr.message);
+      }
+    }
+
+    // 2. Try local disk save if buffer exists (works in local dev)
     if (buffer) {
       try {
         const targetDir = path.join(process.cwd(), "public", cleanBrand, cleanFolder, "img");
@@ -66,7 +84,7 @@ export async function POST(request) {
         const targetFilePath = path.join(targetDir, cleanFilename);
         fs.writeFileSync(targetFilePath, buffer);
 
-        // Also save as bannerNew.jpg for compatibility
+        // Also save as bannerNew.jpg for backwards compatibility
         const compatFilePath = path.join(targetDir, "bannerNew.jpg");
         fs.writeFileSync(compatFilePath, buffer);
 
@@ -89,45 +107,18 @@ export async function POST(request) {
       }
     }
 
-    // 2. Check for Supabase Storage if credentials exist
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (supabaseUrl && !supabaseUrl.includes("your-project.supabase.co") && supabaseKey && !supabaseKey.includes("your-anon-key") && buffer) {
-      try {
-        const storagePath = `${cleanBrand}/${cleanFolder}/img/${cleanFilename}`;
-        const uploadUrl = `${supabaseUrl}/storage/v1/object/mailers/${storagePath}`;
-
-        const uploadRes = await fetch(uploadUrl, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${supabaseKey}`,
-            "apikey": supabaseKey,
-            "Content-Type": "image/jpeg",
-            "x-upsert": "true",
-          },
-          body: buffer,
-        });
-
-        if (uploadRes.ok) {
-          savedToCloud = true;
-          cloudUrl = `${supabaseUrl}/storage/v1/object/public/mailers/${storagePath}`;
-        }
-      } catch (cloudErr) {
-        console.warn("Supabase upload skipped:", cloudErr.message);
-      }
-    }
+    const finalUrl = cloudUrl || localServerPath;
 
     return NextResponse.json({
       success: true,
       filename: cleanFilename,
       folder: cleanFolder,
       brand: cleanBrand,
-      serverPath,
-      url: cloudUrl || serverPath,
+      serverPath: finalUrl,
+      url: finalUrl,
       savedToDisk,
-      savedToCloud,
-      message: `Banner successfully uploaded to ${serverPath}`,
+      savedToCloudinary,
+      message: `Banner successfully uploaded to ${finalUrl}`,
     });
   } catch (err) {
     console.error("Upload route error:", err);
