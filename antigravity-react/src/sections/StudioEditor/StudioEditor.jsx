@@ -127,7 +127,7 @@ export default function StudioEditor({
   const signatureName = deal.signature_name || "Avendus Capital Team";
 
   return (
-    <div className={styles.editorPanel}>
+    <div className={styles.editorPanel} data-lenis-prevent>
       <div className={styles.topBar}>
         <div className={styles.headerText}>
           <div className={styles.title}>

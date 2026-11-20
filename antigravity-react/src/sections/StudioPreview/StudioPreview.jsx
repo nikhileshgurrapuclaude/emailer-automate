@@ -64,7 +64,7 @@ export default function StudioPreview({
   };
 
   return (
-    <div className={styles.previewPanel}>
+    <div className={styles.previewPanel} data-lenis-prevent>
       <div className={styles.topBar}>
         <div className={styles.modeToggles}>
           <button

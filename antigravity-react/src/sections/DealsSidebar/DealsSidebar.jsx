@@ -40,7 +40,7 @@ export default function DealsSidebar({
   };
 
   return (
-    <>
+    <div data-lenis-prevent>
       {isCollapsed && (
         <button
           type="button"
@@ -132,6 +132,6 @@ export default function DealsSidebar({
           )}
         </div>
       </aside>
-    </>
+    </div>
   );
 }
