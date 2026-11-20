@@ -194,12 +194,19 @@ export const TemplateGenerator = {
       }
 
       body,
-      #bodyTable,
       #bodyCell {
         height: 100%;
         margin: 0;
         padding: 0;
         width: 100%;
+      }
+
+      #bodyTable {
+        height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        max-width: 600px;
       }
 
       .mcnPreviewText {
@@ -914,11 +921,12 @@ export const TemplateGenerator = {
         height="100%"
         width="100%"
         id="bodyTable"
+        style="max-width: 600px; margin: 0 auto;"
       >
         <tr>
           <td align="center" valign="top" id="bodyCell">
             <!-- BEGIN TEMPLATE // -->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 0 auto;">
               <tr>
                 <td
                   align="center"

@@ -53,6 +53,55 @@ export async function GET(request, { params }) {
       });
     }
 
+    // Inject a floating "Copy for Email" helper bar for the browser preview tab
+    const previewBar = `
+<div id="emailer-preview-bar" style="position:fixed;top:0;left:0;right:0;height:48px;background:#0f172a;color:#ffffff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 4px 12px rgba(0,0,0,0.25);z-index:999999;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span style="font-weight:600;letter-spacing:-0.2px;color:#f8fafc;">Avendus Emailer Shareable View</span>
+    <span style="background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:11px;font-weight:500;padding:2px 8px;border-radius:12px;">Production Ready</span>
+  </div>
+  <button id="preview-copy-btn" onclick="copyEmailForGmail()" style="background:#cc1919;color:#ffffff;border:none;padding:7px 16px;border-radius:6px;font-weight:600;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(204,25,25,0.35);transition:all 0.2s ease;">
+    <span>📋 Copy for Email (Direct Paste for Gmail)</span>
+  </button>
+</div>
+<script>
+  function copyEmailForGmail() {
+    const btn = document.getElementById('preview-copy-btn');
+    const bar = document.getElementById('emailer-preview-bar');
+    if (bar) bar.style.display = 'none';
+    const cleanHtml = document.documentElement.outerHTML;
+    if (bar) bar.style.display = 'flex';
+    
+    if (navigator.clipboard && window.ClipboardItem) {
+      const htmlBlob = new Blob([cleanHtml], { type: 'text/html' });
+      const textBlob = new Blob([cleanHtml], { type: 'text/plain' });
+      navigator.clipboard.write([
+        new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob })
+      ]).then(() => {
+        btn.innerHTML = '<span>✅ Copied! Paste directly into Gmail (Ctrl+V)</span>';
+        btn.style.background = '#16a34a';
+        setTimeout(() => {
+          btn.innerHTML = '<span>📋 Copy for Email (Direct Paste for Gmail)</span>';
+          btn.style.background = '#cc1919';
+        }, 3500);
+      }).catch(err => {
+        console.error('Copy error:', err);
+      });
+    }
+  }
+</script>
+<style>
+  body { padding-top: 48px !important; }
+  @media print { #emailer-preview-bar { display: none !important; } body { padding-top: 0 !important; } }
+</style>
+`;
+
+    if (html.includes("</body>")) {
+      html = html.replace("</body>", `${previewBar}</body>`);
+    } else {
+      html += previewBar;
+    }
+
     return new Response(html, {
       status: 200,
       headers: {
