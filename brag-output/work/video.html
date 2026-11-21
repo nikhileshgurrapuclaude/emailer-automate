@@ -1,0 +1,322 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&display=block">
+<style>
+:root{--ink:#1A1A1A;--ink2:#262626;--paper:#FAF8F2;--paper2:#F0EDE3;--y:#FFEE00;--muted:#5A5A5A;--soft:#C9C6BC;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--ink);font-family:'DM Sans',Arial,sans-serif;}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}
+.mono{font-family:'Courier Prime','Courier New',monospace}
+.stripes{position:absolute;left:0;width:1920px;height:28px;background:repeating-linear-gradient(-45deg,#FFEE00 0 28px,#1A1A1A 28px 56px)}
+.eyebrow{display:inline-block;font-family:'Courier Prime',monospace;font-weight:700;font-size:30px;background:var(--y);color:var(--ink);padding:6px 18px;letter-spacing:1px}
+.h{font-weight:700;letter-spacing:-3px;line-height:1.02}
+.abs{position:absolute}
+/* wipe */
+#wipe{position:absolute;top:-60px;height:1200px;width:3000px;background:repeating-linear-gradient(-45deg,#FFEE00 0 48px,#1A1A1A 48px 96px);transform-origin:0 0;z-index:50;display:none}
+/* cards */
+.card{background:#FFFEFA;border:3px solid var(--ink);box-shadow:10px 10px 0 #FFEE00;padding:30px 36px}
+.card h3{font-size:42px;font-weight:700;letter-spacing:-1px;color:var(--ink);margin-bottom:10px}
+.card p{font-size:30px;line-height:1.35;color:var(--muted)}
+/* studio camera */
+.cam{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.cam img.shot{position:absolute;left:0;top:0;width:1920px;height:1080px;display:block}
+.cursor{position:absolute;left:0;top:0;width:44px;height:44px;z-index:20}
+.ring{position:absolute;width:80px;height:80px;border:5px solid #FFEE00;border-radius:50%;z-index:19}
+.caption{position:absolute;left:96px;bottom:84px;display:flex;align-items:center;gap:24px;background:rgba(26,26,26,.94);padding:22px 34px 22px 22px;border-left:10px solid #FFEE00;z-index:21}
+.caption .n{font-family:'Courier Prime',monospace;font-weight:700;font-size:44px;background:var(--y);color:var(--ink);padding:6px 16px}
+.caption .t{font-size:60px;font-weight:700;color:var(--paper);letter-spacing:-1.5px}
+.toast{position:absolute;right:96px;top:380px;background:#1A1A1A;border:3px solid #FFEE00;color:var(--paper);font-size:34px;font-weight:500;padding:20px 30px;display:flex;gap:16px;align-items:center;z-index:22}
+.toast b{color:var(--y)}
+/* rows */
+.row{display:grid;grid-template-columns:720px 120px 760px;align-items:center;padding:26px 0;border-top:3px solid #1A1A1A}
+.row .b{font-size:40px;color:#6A6A6A;text-decoration:line-through;text-decoration-thickness:3px}
+.row .a{font-size:44px;font-weight:700;color:var(--ink)}
+.row .arr{font-family:'Courier Prime',monospace;font-size:52px;font-weight:700;background:var(--y);width:84px;text-align:center}
+.feat{background:#FFFEFA;border:3px solid var(--ink);box-shadow:10px 10px 0 #FFEE00;padding:30px 34px;display:flex;flex-direction:column;gap:12px}
+.feat .ic{width:64px;height:64px;background:var(--y);display:flex;align-items:center;justify-content:center}
+.feat h3{font-size:44px;font-weight:700;letter-spacing:-1px}
+.feat p{font-size:28px;color:var(--muted);line-height:1.35}
+.sum{border-top:5px solid #FFEE00;padding-top:28px}
+.sum .k{font-family:'Courier Prime',monospace;font-weight:700;font-size:34px;color:var(--y);margin-bottom:18px}
+.sum h3{font-size:64px;font-weight:700;letter-spacing:-2px;line-height:1.05;color:var(--paper)}
+</style></head><body>
+
+<!-- 1 HOOK 0-4 -->
+<div class="scene" id="s1" style="background:#1A1A1A">
+  <div class="stripes" style="top:0" id="s1st"></div>
+  <div class="abs mono" style="left:160px;top:200px;font-size:48px;color:#C9C6BC;line-height:1.5" id="s1list">
+    <div id="s1a"></div><div id="s1b"></div><div id="s1c"></div>
+  </div>
+  <div class="abs h" id="s1main" style="left:160px;top:520px;width:1600px;font-size:128px;color:#FAF8F2">every one lands on a developer’s <span style="color:#FFEE00">desk.</span></div>
+</div>
+
+<!-- 2 TITLE 4-8 -->
+<div class="scene" id="s2" style="background:#1A1A1A">
+  <div class="stripes" style="top:0"></div><div class="stripes" style="top:1052px"></div>
+  <div class="abs" style="left:160px;top:170px" id="s2e"><span class="eyebrow">project overview</span></div>
+  <div class="abs h" id="s2t" style="left:160px;top:270px;width:1200px;font-size:176px;color:#FAF8F2;letter-spacing:-6px;line-height:.98">emailer automation <span style="color:#FFEE00">studio</span></div>
+  <div class="abs" id="s2s" style="left:164px;top:830px;width:1100px;font-size:46px;color:#C9C6BC;line-height:1.3">client-ready HTML emailers in minutes,<br>not developer hours.</div>
+  <div class="abs" id="s2m" style="left:1340px;top:200px;width:440px;height:560px;background:#262626;border:3px solid #3A3A3A">
+    <div class="abs" id="m1" style="left:32px;top:32px;width:370px;height:70px;background:#FFEE00"></div>
+    <div class="abs mb" style="left:32px;top:140px;width:370px;height:16px;background:#444"></div>
+    <div class="abs mb" style="left:32px;top:178px;width:300px;height:16px;background:#444"></div>
+    <div class="abs mb" style="left:32px;top:216px;width:340px;height:16px;background:#444"></div>
+    <div class="abs mb" style="left:32px;top:254px;width:220px;height:16px;background:#444"></div>
+    <div class="abs mb" style="left:32px;top:310px;width:175px;height:130px;background:#3A3A3A"></div>
+    <div class="abs mb" style="left:227px;top:310px;width:175px;height:130px;background:#3A3A3A"></div>
+    <div class="abs mb" style="left:32px;top:470px;width:170px;height:48px;background:#FFEE00"></div>
+  </div>
+</div>
+
+<!-- 3 PROBLEM 8-16 -->
+<div class="scene" id="s3" style="background:#F0EDE3">
+  <div class="abs mono" id="s3code" style="left:-40px;top:0;width:2000px;font-size:30px;line-height:1.6;color:#1A1A1A;opacity:.06;white-space:pre"></div>
+  <div class="stripes" style="top:0"></div>
+  <div class="abs" style="left:128px;top:110px" id="s3e"><span class="eyebrow">01 / the problem</span></div>
+  <div class="abs h" id="s3t" style="left:128px;top:180px;font-size:110px;color:#1A1A1A">where the hours go</div>
+  <div class="abs" style="left:128px;top:380px;width:1664px;display:grid;grid-template-columns:1fr 1fr;gap:40px">
+    <div class="card pc"><h3>hand-coded HTML, every time</h3><p>Nested tables and inline styles, built the old, slow way.</p></div>
+    <div class="card pc"><h3>Outlook breaks layouts</h3><p>Fine in a browser, collapsed in Outlook. Hours of fixing.</p></div>
+    <div class="card pc"><h3>small edits, long loops</h3><p>One changed figure means another developer round trip.</p></div>
+    <div class="card pc"><h3>branding drifts</h3><p>Signatures and footers copied between files by hand.</p></div>
+  </div>
+</div>
+
+<!-- 4 CORE 16-20 -->
+<div class="scene" id="s4" style="background:#FFEE00">
+  <div class="abs mono" id="s4k" style="left:160px;top:250px;font-size:40px;font-weight:700;color:#1A1A1A">the core problem_</div>
+  <div class="abs h" id="s4a" style="left:160px;top:350px;white-space:nowrap;font-size:124px;color:#1A1A1A;letter-spacing:-5px">developers format emailers.</div>
+  <div class="abs h" id="s4b" style="left:160px;top:510px;white-space:nowrap;font-size:124px;color:#1A1A1A;letter-spacing:-5px">business teams wait.</div>
+</div>
+
+<!-- 5 MEET + HUB 20-24 -->
+<div class="scene" id="s5" style="background:#1A1A1A">
+  <div class="abs h" id="s5t" style="left:0;top:400px;width:1920px;text-align:center;font-size:170px;color:#FAF8F2;letter-spacing:-6px">meet the <span style="color:#FFEE00">studio.</span></div>
+  <div class="cam" id="s5cam"><img class="shot" src="shots/home.png"></div>
+  <svg class="cursor" id="s5cur" viewBox="0 0 24 24"><path d="M3 2 L3 20 L8 15.5 L11.5 22 L14.5 20.6 L11 14.2 L17.5 14 Z" fill="#FAF8F2" stroke="#1A1A1A" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <div class="ring" id="s5ring"></div>
+  <div class="caption" id="s5cap"><span class="n">02</span><span class="t">pick a brand workspace</span></div>
+</div>
+
+<!-- 6 STUDIO STEPS 24-36 -->
+<div class="scene" id="s6" style="background:#121318">
+  <div class="cam" id="s6cam">
+    <img class="shot" src="shots/studio_demo.png">
+    <!-- overlay real demo emailer into preview pane -->
+    <div class="abs" style="left:1203px;top:162px;width:620px;height:900px;overflow:hidden;background:#fff">
+      <img id="s6demo" src="shots/demo_full.png" style="position:absolute;left:0;top:0;width:620px">
+    </div>
+    <!-- typing overlay on Email Title field -->
+    <div class="abs" id="s6type" style="left:314px;top:278px;width:766px;height:35px;background:#12141A;color:#F2F2F2;font-size:14.5px;line-height:35px;padding-left:12px;font-family:'DM Sans',Arial,sans-serif"></div>
+    <div class="abs" id="s6hl" style="border:3px solid #FFEE00;border-radius:12px;box-shadow:0 0 24px rgba(255,238,0,.6)"></div>
+  </div>
+  <svg class="cursor" id="s6cur" viewBox="0 0 24 24"><path d="M3 2 L3 20 L8 15.5 L11.5 22 L14.5 20.6 L11 14.2 L17.5 14 Z" fill="#FAF8F2" stroke="#1A1A1A" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <div class="ring" id="s6ring"></div>
+  <div class="caption" id="s6cap"><span class="n" id="s6n">01</span><span class="t" id="s6t">select a brand</span></div>
+  <div class="toast" id="s6toast"><svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" stroke="#FFEE00" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>demo_emailer.zip</b> exported</span></div>
+</div>
+
+<!-- 7 BEFORE/AFTER 36-42 -->
+<div class="scene" id="s7" style="background:#FAF8F2">
+  <div class="stripes" style="top:0"></div>
+  <div class="abs" style="left:128px;top:110px" id="s7e"><span class="eyebrow">03 / what changes</span></div>
+  <div class="abs h" id="s7t" style="left:128px;top:180px;font-size:110px;color:#1A1A1A">before → with the studio</div>
+  <div class="abs" style="left:128px;top:380px;width:1664px">
+    <div class="row rw"><span class="b">developer hand-codes tables</span><span class="arr">→</span><span class="a">pick a prebuilt template</span></div>
+    <div class="row rw"><span class="b">test and patch for Outlook</span><span class="arr">→</span><span class="a">Outlook-compliant tables</span></div>
+    <div class="row rw"><span class="b">edits go back to a developer</span><span class="arr">→</span><span class="a">edit directly in the studio</span></div>
+    <div class="row rw" style="border-bottom:3px solid #1A1A1A"><span class="b">developer packages the HTML</span><span class="arr">→</span><span class="a">one-click HTML export</span></div>
+  </div>
+</div>
+
+<!-- 8 FEATURES 42-48 -->
+<div class="scene" id="s8" style="background:#F0EDE3">
+  <div class="stripes" style="top:0"></div>
+  <div class="abs" style="left:128px;top:110px" id="s8e"><span class="eyebrow">04 / features</span></div>
+  <div class="abs h" id="s8t" style="left:128px;top:180px;font-size:110px;color:#1A1A1A">key features</div>
+  <div class="abs" style="left:128px;top:370px;width:1664px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px">
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 9v12"/></svg></div><h3>prebuilt templates</h3><p>Nobody starts from a blank file.</p></div>
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.6"><path d="M4 12.5l5 5L20 6.5"/></svg></div><h3>Outlook-safe HTML</h3><p>Table-based output for every major client.</p></div>
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.8-4 3.4-6 6.5-6s5.7 2 6.5 6M15.5 14.5c2.6 0 4.6 1.6 5.5 5"/></svg></div><h3>multi-brand</h3><p>Own theme, signature, footer and nav.</p></div>
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4"><rect x="3" y="4" width="18" height="16"/><circle cx="9" cy="10" r="2"/><path d="M3 18l6-5 4 3 3-2 5 4"/></svg></div><h3>custom assets</h3><p>Your logos, images and brand elements.</p></div>
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><h3>live preview</h3><p>Check it before export. No test-send loop.</p></div>
+    <div class="feat ft"><div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4"><path d="M3 6h7l2 2h9v11H3z"/></svg></div><h3>saved emailers</h3><p>Reopen, reuse and update past deals.</p></div>
+  </div>
+</div>
+
+<!-- 9 WORKSPACES 48-52 -->
+<div class="scene" id="s9" style="background:#121212">
+  <div class="cam" id="s9cam"><img class="shot" src="shots/home.png"></div>
+  <div class="caption" id="s9cap"><span class="n">05</span><span class="t">one studio, three brand workspaces</span></div>
+</div>
+
+<!-- 10 SUMMARY 52-56 -->
+<div class="scene" id="s10" style="background:#1A1A1A">
+  <div class="stripes" style="top:0"></div>
+  <div class="abs" style="left:128px;top:110px" id="s10e"><span class="eyebrow">06 / impact</span></div>
+  <div class="abs h" id="s10t" style="left:128px;top:180px;font-size:110px;color:#FAF8F2">what the team gets</div>
+  <div class="abs" style="left:128px;top:440px;width:1664px;display:grid;grid-template-columns:repeat(4,1fr);gap:48px">
+    <div class="sum sm"><div class="k">01</div><h3>faster turnaround</h3></div>
+    <div class="sum sm"><div class="k">02</div><h3>less developer dependency</h3></div>
+    <div class="sum sm"><div class="k">03</div><h3>fewer rendering errors</h3></div>
+    <div class="sum sm"><div class="k">04</div><h3>easy to scale</h3></div>
+  </div>
+</div>
+
+<!-- 11 OUTRO 56-60 -->
+<div class="scene" id="s11" style="background:#1A1A1A">
+  <div class="stripes" style="top:0"></div><div class="stripes" style="top:1052px"></div>
+  <div class="abs h" id="s11t" style="left:160px;top:230px;font-size:260px;color:#FAF8F2;letter-spacing:-10px">try it<span style="color:#FFEE00">.</span></div>
+  <div class="abs mono" id="s11u" style="left:164px;top:560px;font-size:60px;font-weight:700;background:#FFEE00;color:#1A1A1A;padding:16px 32px">emailer-automate.vercel.app/studio</div>
+  <div class="abs" id="s11s" style="left:164px;top:720px;font-size:44px;color:#C9C6BC">client-ready HTML emailers in minutes, not developer hours.</div>
+  <div class="abs mono" id="s11c" style="left:164px;top:940px;font-size:32px;color:#C9C6BC">a ting project</div>
+</div>
+
+<div id="wipe"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=cl(x);return 1-Math.pow(1-x,3)};
+const eio=x=>{x=cl(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const io=(t,s,d)=>ease((t-s)/d);
+const lerp=(a,b,k)=>a+(b-a)*k;
+// in/out: element appears at a (rise), leaves at b
+function show(el,t,a,b,o={}){
+  const dy=o.dy??40, d=o.d??0.45, od=o.od??0.3, sc=o.sc;
+  const k=io(t,a,d), q=b==null?0:io(t,b,od);
+  el.style.opacity=(k*(1-q)).toFixed(3);
+  let tr=`translateY(${((1-k)*dy-q*24).toFixed(1)}px)`;
+  if(sc) tr+=` scale(${lerp(sc,1,k).toFixed(3)})`;
+  el.style.transform=tr;
+}
+const SC=[['s1',0,4],['s2',4,8],['s3',8,16],['s4',16,20],['s5',20,24],['s6',24,36],['s7',36,42],['s8',42,48],['s9',48,52],['s10',52,56],['s11',56,60]];
+const WIPES=[4,16,20,56];
+function typeText(t,s,str,cps){const n=cl(Math.floor((t-s)*cps),0,str.length);return t<s?'':str.slice(0,n)}
+
+// camera: keyframes [t,cx,cy,s]; screenshot space -> screen
+function camAt(keys,t){
+  let i=0; while(i<keys.length-1 && t>keys[i+1][0]) i++;
+  const A=keys[i], B=keys[Math.min(i+1,keys.length-1)];
+  let k = B[0]===A[0]?1:eio((t-A[0])/(B[0]-A[0]));
+  if(t<=keys[0][0]) {k=0;}
+  let cx=lerp(A[1],B[1],k), cy=lerp(A[2],B[2],k), s=lerp(A[3],B[3],k);
+  if(s>=1){cx=cl(cx,960/s,1920-960/s);cy=cl(cy,540/s,1080-540/s);}
+  return {cx,cy,s};
+}
+function applyCam(el,c){el.style.transform=`translate(960px,540px) scale(${c.s}) translate(${-c.cx}px,${-c.cy}px)`;}
+const toScr=(c,x,y)=>[960+(x-c.cx)*c.s, 540+(y-c.cy)*c.s];
+function pathAt(keys,t){ // [t,x,y]
+  let i=0; while(i<keys.length-1 && t>keys[i+1][0]) i++;
+  const A=keys[i],B=keys[Math.min(i+1,keys.length-1)];
+  const k=t<=keys[0][0]?0:(B[0]===A[0]?1:eio((t-A[0])/(B[0]-A[0])));
+  return [lerp(A[1],B[1],k),lerp(A[2],B[2],k)];
+}
+function cursor(cur,ring,c,keys,t,clicks){
+  const [x,y]=pathAt(keys,t); const [sx,sy]=toScr(c,x,y);
+  let press=0; for(const ct of clicks){ if(t>=ct&&t<ct+0.15) press=1; }
+  cur.style.transform=`translate(${sx-6}px,${sy-4}px) scale(${press?0.86:1})`;
+  let rs=null; for(const ct of clicks){ if(t>=ct && t<ct+0.5) rs=(t-ct)/0.5; }
+  if(rs==null){ring.style.opacity=0;} else {ring.style.opacity=(1-rs).toFixed(3);const r=40*lerp(0.4,1.6,rs);ring.style.left=(sx-40)+'px';ring.style.top=(sy-40)+'px';ring.style.transform=`scale(${lerp(0.4,1.6,rs)})`;}
+}
+
+const CODE=Array.from({length:30},(_,i)=>'<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="left" style="font-family:Arial;mso-line-height-rule:exactly;">'.slice(0)).join('\n');
+
+window.render=function(t){
+  for(const [id,a,b] of SC) $(id).style.display=(t>=a&&t<b)?'block':'none';
+  // wipe
+  const w=$('wipe'); let wp=null; for(const c of WIPES){ if(t>=c-0.35&&t<c+0.35) wp=(t-(c-0.35))/0.7; }
+  if(wp==null) w.style.display='none'; else { w.style.display='block'; const x=-3200+eio(wp)*(1920+3200+200); w.style.transform=`translateX(${x}px) skewX(-20deg)`; }
+
+  // S1 hook
+  if(t<4){
+    $('s1a').textContent=typeText(t,0.15,'deal announcement.',40);
+    $('s1b').textContent=typeText(t,0.65,'market update.',40);
+    $('s1c').textContent=typeText(t,1.1,'research newsletter.',40);
+    show($('s1main'),t,1.5,null,{dy:60,d:0.55});
+    $('s1st').style.transform=`translateX(${(1-io(t,0,0.6))*-1920}px)`;
+  }
+  // S2 title
+  if(t>=4&&t<8){
+    show($('s2e'),t,4.15,7.75);
+    show($('s2t'),t,4.3,7.75,{dy:70,d:0.6});
+    show($('s2s'),t,4.75,7.75);
+    show($('s2m'),t,4.9,7.75,{dy:80,d:0.7});
+    document.querySelectorAll('#s2m .mb').forEach((e,i)=>{e.style.opacity=io(t,5.2+i*0.12,0.3)});
+  }
+  // S3 problem
+  if(t>=8&&t<16){
+    $('s3code').textContent=CODE; $('s3code').style.transform=`translateY(${-(t-8)*30}px)`;
+    show($('s3e'),t,8.05,15.7); show($('s3t'),t,8.15,15.7,{dy:50});
+    document.querySelectorAll('.pc').forEach((e,i)=>show(e,t,8.5+i*1.0,15.7,{dy:50,sc:0.94}));
+  }
+  // S4 core
+  if(t>=16&&t<20){
+    show($('s4k'),t,16.25,19.75); show($('s4a'),t,16.5,19.75,{dy:60,d:0.5}); show($('s4b'),t,17.5,19.75,{dy:60,d:0.5});
+  }
+  // S5 hub
+  if(t>=20&&t<24){
+    show($('s5t'),t,20.25,21.3,{dy:50,d:0.5,od:0.25});
+    const keys=[[21.4,960,560,0.8],[22.0,960,540,0.86],[23.05,960,540,0.86],[23.9,566,665,2.4]];
+    const c=camAt(keys,t); applyCam($('s5cam'),c);
+    const ca=io(t,21.4,0.5); $('s5cam').style.opacity=ca;
+    $('s5cam').style.transform+=` `;
+    cursor($('s5cur'),$('s5ring'),c,[[21.8,1300,900],[22.9,566,668],[23.9,566,668]],t,[23.0]);
+    $('s5cur').style.opacity=io(t,21.8,0.2)*(1-io(t,23.6,0.2));
+    show($('s5cap'),t,21.9,23.5,{dy:30});
+  }
+  // S6 studio steps
+  if(t>=24&&t<36){
+    const keys=[[24.0,566,500,2.4],[24.5,960,540,0.86],[25.0,960,540,0.86],[25.6,330,40,2.3],[26.5,330,40,2.3],[27.1,250,300,1.7],[29.0,250,300,1.7],[29.6,697,280,1.7],[31.5,697,280,1.7],[32.1,1513,560,1.18],[34.0,1513,560,1.18],[34.4,1700,110,2.0],[35.4,1700,110,2.0],[35.95,960,540,0.9]];
+    const c=camAt(keys,t); applyCam($('s6cam'),c);
+    // captions
+    const steps=[[24.6,'01','select a brand'],[26.5,'02','create'],[29,'03','format'],[31.5,'04','preview'],[34,'05','export']];
+    let si=0; for(let i=0;i<steps.length;i++) if(t>=steps[i][0]) si=i;
+    $('s6n').textContent=steps[si][1]; $('s6t').textContent=steps[si][2];
+    const cap=$('s6cap'); const k=io(t,steps[si][0],0.35); const q=io(t,35.6,0.3);
+    cap.style.opacity=(k*(1-q)).toFixed(3); cap.style.transform=`translateX(${(1-k)*-60}px)`;
+    // highlight boxes [x,y,w,h,start,end]
+    const hls=[[372,14,132,36,25.6,26.4],[10,202,270,96,28.0,28.9],[311,275,772,41,29.5,31.4],[1196,155,634,914,32.1,33.9],[1756,80,144,38,34.6,35.5]];
+    const hl=$('s6hl'); let on=null; for(const h of hls) if(t>=h[4]&&t<h[5]) on=h;
+    if(on){hl.style.display='block';hl.style.left=on[0]+'px';hl.style.top=on[1]+'px';hl.style.width=on[2]+'px';hl.style.height=on[3]+'px';hl.style.opacity=(io(t,on[4],0.2)*(1-io(t,on[5]-0.2,0.2))).toFixed(3);} else hl.style.display='none';
+    // typing
+    const tt=$('s6type'); const str='Q3 Deal Announcement - Avendus Capital';
+    if(t<29.6){tt.style.display='none';} else {tt.style.display='block'; const n=cl(Math.floor((t-29.75)/0.125*3),0,str.length); const caret=(Math.floor(t*4)%2===0||n<str.length)?'|':''; tt.textContent=str.slice(0,t<29.75?0:n)+caret;}
+    // demo scroll
+    $('s6demo').style.transform=`translateY(${-io(t,32.3,1.6)*118}px)`;
+    // cursor
+    cursor($('s6cur'),$('s6ring'),c,[[26.6,600,500],[27.4,199,96],[28.6,199,96],[29.4,520,296],[31.5,520,296],[33.8,1600,300],[34.4,1828,99],[36,1828,99]],t,[27.5,29.5,34.5]);
+    $('s6cur').style.opacity=io(t,26.6,0.2)*(1-io(t,35.5,0.2));
+    // toast
+    show($('s6toast'),t,34.75,35.7,{dy:-30,d:0.35});
+    $('s6cam').style.opacity=1-io(t,35.75,0.25);
+  }
+  // S7
+  if(t>=36&&t<42){
+    show($('s7e'),t,36.05,41.7); show($('s7t'),t,36.15,41.7,{dy:50});
+    document.querySelectorAll('.rw').forEach((e,i)=>show(e,t,36.5+i*0.5,41.7,{dy:30}));
+  }
+  // S8
+  if(t>=42&&t<48){
+    show($('s8e'),t,42.05,47.7); show($('s8t'),t,42.15,47.7,{dy:50});
+    document.querySelectorAll('.ft').forEach((e,i)=>show(e,t,42.5+i*0.25,47.7,{dy:40,sc:0.92}));
+  }
+  // S9 workspaces
+  if(t>=48&&t<52){
+    const c=camAt([[48,960,560,1.42],[52,960,575,1.58]],t); applyCam($('s9cam'),c);
+    $('s9cam').style.opacity=(io(t,48,0.35)*(1-io(t,51.7,0.3))).toFixed(3);
+    show($('s9cap'),t,48.3,51.7,{dy:30});
+  }
+  // S10
+  if(t>=52&&t<56){
+    show($('s10e'),t,52.05,55.75); show($('s10t'),t,52.15,55.75,{dy:50});
+    document.querySelectorAll('.sm').forEach((e,i)=>show(e,t,52.5+i*0.5,55.75,{dy:40}));
+  }
+  // S11
+  if(t>=56){
+    show($('s11t'),t,56.2,null,{dy:80,d:0.6}); show($('s11u'),t,56.7,null); show($('s11s'),t,57.0,null); show($('s11c'),t,57.3,null);
+  }
+};
+window.ready=(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r})));return true})();
+</script>
+</body></html>

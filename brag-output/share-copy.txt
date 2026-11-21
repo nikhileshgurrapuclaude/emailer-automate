@@ -1,0 +1,3 @@
+Every emailer used to land on a developer’s desk. Emailer Automation Studio turns it into pick a brand, fill a template, preview, export: client-ready, Outlook-safe HTML in minutes, not developer hours.
+
+Try it: emailer-automate.vercel.app/studio · a ting project
