@@ -84,6 +84,8 @@ export const TemplateGenerator = {
     } = data;
 
     const formattedContent = this.formatContent(content);
+    const ctaLabel = (buttonLabel || '').trim() || 'Know More';
+    const ctaHref = this.normalizeUrl(buttonLink) || 'https://www.avendus.com';
     const snippet = previewText ? previewText.trim() : title;
     const cleanBrand = (brand || 'avendus').toLowerCase();
     const cleanFolder = (folderName || 'deal_KSH_Group').trim();
@@ -1118,208 +1120,7 @@ export const TemplateGenerator = {
                                           line-height: 125%;
                                         "
                                       >
-                                        <p
-                                          style="
-                                            text-align: justify;
-                                            line-height: 125%;
-                                            font-family:
-                                              arial,
-                                              helvetica neue,
-                                              helvetica,
-                                              sans-serif;
-                                          "
-                                        >
-                                          <!-- <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                              >&nbsp;</span
-                                            ></span
-                                          ><br /> -->
-
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                              ><strong>
-                                                Avendus Capital advises
-                                                Kirloskar-backed Arka Fincap on
-                                                its investment from TPG
-                                              </strong>
-                                            </span></span
-                                          >
-                                          <br />
-                                          <br />
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                            >
-                                              Arka Fincap Limited (“Arka”), a
-                                              Kirloskar Group promoted
-                                              non-banking financial company
-                                              (NBFC), announced it has signed
-                                              definitive agreements with The
-                                              Rise Funds, TPG’s multi-sector
-                                              global impact investing strategy.
-                                              The strategic investment comprises
-                                              an initial investment of INR 525
-                                              cr, with the potential for an
-                                              additional INR 275 cr through a
-                                              subsequent tranche, subject to the
-                                              achievement of specified business
-                                              milestones aligned with Arka’s
-                                              growth strategy and requisite
-                                              regulatory approvals.
-                                            </span></span
-                                          >
-
-                                          <br />
-                                          <br />
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                              ><strong>
-                                                Avendus Capital acted as the
-                                                exclusive financial advisor to
-                                                Arka Fincap Limited on this
-                                                transaction.
-                                              </strong>
-                                            </span></span
-                                          >
-                                          <br />
-                                          <br />
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                            >
-                                              <strong>
-                                                Gauri Kirloskar, Vice
-                                                Chairperson and Managing
-                                                Director at Kirloskar Oil
-                                                Engines
-                                              </strong>
-                                              said, “As a Group, we have always
-                                              placed great value on enduring
-                                              partnerships and the
-                                              institution-building ethos of
-                                              creating businesses that stand the
-                                              test of time. We seek partners who
-                                              share this philosophy, and we see
-                                              a strong alignment with TPG’s
-                                              approach. We believe this
-                                              partnership marks the beginning of
-                                              a meaningful, long-term
-                                              relationship that will create
-                                              lasting impact for Arka, TPG and
-                                              all our stakeholders, most
-                                              importantly our customers across
-                                              the country.”
-                                            </span></span
-                                          >
-                                          <br />
-                                          <br />
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                            >
-                                              <strong>
-                                                Samrat Gupta, Managing Director
-                                                at Arka Fincap
-                                              </strong>
-                                              said, “At Arka, we believe
-                                              resilient financial institutions
-                                              are built on capital anchored in
-                                              character, customer servicing and
-                                              unwavering tech-led credit
-                                              discipline. Crossing INR 1,000 cr
-                                              in secured retail assets is a
-                                              defining milestone in our ambition
-                                              to build a formidable,
-                                              future-ready financial enterprise,
-                                              serving entrepreneurial
-                                              aspirations of our country.
-                                              Kirloskar Group’s established
-                                              legacy and TPG’s global investment
-                                              expertise create a trustworthy
-                                              platform for Arka’s next phase of
-                                              growth.”
-                                            </span></span
-                                          >
-                                          <br />
-                                          <br />
-                                          <span style="font-size: 14px"
-                                            ><span
-                                              style="
-                                                font-family:
-                                                  arial,
-                                                  helvetica neue,
-                                                  helvetica,
-                                                  sans-serif;
-                                              "
-                                            >
-                                              <strong>
-                                                Anshul Agarwal, Managing
-                                                Director and Head, Financial
-                                                Institutions Group, Avendus
-                                                Capital
-                                              </strong>
-                                              said, “Under Samrat’s leadership,
-                                              Arka has built an impressive
-                                              retail franchise in a short span
-                                              of 18 months, driven by its focus
-                                              on underserved markets and
-                                              customers. The investment from TPG
-                                              is a strong endorsement of Arka’s
-                                              growth potential and will support
-                                              Arka in its path to portfolio
-                                              retailisation. We are pleased to
-                                              have advised Arka Fincap on this
-                                              transaction, positioning the
-                                              business to build on its existing
-                                              strengths and capture the
-                                              significant opportunity in India’s
-                                              secured lending market, and thank
-                                              the Kirloskar Group for their
-                                              trust and confidence in Avendus.”
-                                            </span></span
-                                          >
-                                          <br />
-                                          <br />
-                                        </p>
+                                        ${formattedContent}
                                       </td>
                                     </tr>
                                   </tbody>
@@ -1383,8 +1184,8 @@ export const TemplateGenerator = {
                                       >
                                         <a
                                           class="mcnButton"
-                                          title="Read more"
-                                          href="https://www.avendus.com/transactions/investment-banking/financial-institutions-group/private-equity/avendus-capital-advises-kirloskar-backed-arka-fincap-on-its-investment-from-tpg"
+                                          title="${this.escapeHtml(ctaLabel)}"
+                                          href="${this.escapeHtml(ctaHref)}"
                                           target="_blank"
                                           style="
                                             font-weight: bold;
@@ -1394,7 +1195,7 @@ export const TemplateGenerator = {
                                             text-decoration: none;
                                             color: #ffffff;
                                           "
-                                          >Know More</a
+                                          >${this.escapeHtml(ctaLabel)}</a
                                         >
                                       </td>
                                     </tr>
@@ -1794,6 +1595,17 @@ export const TemplateGenerator = {
     return this.generateAvendus(data, options);
   },
 
+  // Make a CTA link usable in email clients: trim it, add https:// when the scheme is missing
+  // (e.g. "www.avendus.com"), and drop javascript:/data: links.
+  normalizeUrl(url) {
+    const raw = String(url || '').trim();
+    if (!raw) return '';
+    if (/^(javascript|data|vbscript):/i.test(raw)) return '';
+    if (/^(https?:|mailto:|tel:)/i.test(raw)) return raw;
+    if (raw.startsWith('//')) return `https:${raw}`;
+    return `https://${raw.replace(/^\/+/, '')}`;
+  },
+
   escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -1819,6 +1631,8 @@ export function generateEmailerHtml(deal, options = {}) {
     content: deal.body_content || deal.content,
     buttonLabel: deal.cta_text || deal.buttonLabel,
     buttonLink: deal.cta_url || deal.buttonLink,
+    buttonColor: deal.buttonColor || undefined,
+    buttonRadius: deal.buttonRadius || undefined,
     signoffText: deal.signoff_text,
     signatureName: deal.signature_name,
     customDomain: deal.originUrl,
